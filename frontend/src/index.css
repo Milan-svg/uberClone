@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* :root {
+  --color-primary: #f2bfa4;
+  --color-background: #f5e7de;
+} */
+
+@theme {
+  --color-uber-black: #000000;
+  --color-uber-green: #10b461;
+  --color-input-bg: #eeeeee;
+  --height-input: 3.5rem;
+  --height-button: 3.5rem;
+  --radius: 0.5rem;
+}
+
+@layer components {
+  /* Each class is independent */
+  .input {
+    width: 100%;
+    height: var(--height-input);
+    padding: 0 1rem;
+    font-size: 1rem;
+    margin-bottom: calc(var(--spacing) * 4);
+    color: #000000;
+    background-color: var(--color-input-bg);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .input::placeholder {
+    color: #a3a3a3;
+  }
+
+  .input:focus {
+    border-color: var(--color-uber-black);
+    background-color: white;
+  }
+
+  /* Button primary - all CSS, no @apply */
+  .btn-primary {
+    width: 100%;
+    height: var(--height-button);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* font-size: 1.125rem; */
+    font-size: var(--text-2xl) /* 1.5rem = 24px */;
+    line-height: var(
+      --tw-leading,
+      var(--text-2xl--line-height) /* calc(2 / 1.5) ≈ 1.333333 */
+    );
+    font-weight: 600;
+    background-color: var(--color-uber-black);
+    color: white;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    outline: none;
+  }
+
+  .btn-primary:active {
+    opacity: 0.8;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* font-size: 1.25rem; */
+    font-weight: 600;
+    font-size: var(--text-2xl) /* 1.5rem = 24px */;
+    line-height: var(
+      --tw-leading,
+      var(--text-2xl--line-height) /* calc(2 / 1.5) ≈ 1.333333 */
+    );
+    background-color: var(--color-uber-green);
+    color: white;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    outline: none;
+  }
+
+  .btn-secondary:active {
+    opacity: 0.8;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-top: 1.25rem; /* Add this - spacing from previous element */
+    /* font-size: 1.125rem; */
+    font-size: var(--text-xl) /* 1.25rem = 20px */;
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+    font-weight: 500;
+    color: #000000;
+  }
+
+  .link {
+    color: #1e3a8a;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .link:active {
+    opacity: 0.7;
+  }
+  .mobile-container {
+    max-width: 430px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: white;
+    position: relative;
+  }
+  .auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.75rem;
+  }
+}

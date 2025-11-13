@@ -1,0 +1,74 @@
+import React, { useRef, useState } from "react";
+import { Link } from "react-router";
+import RideComplete from "../components/RideComplete";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+const CaptainActiveRide = () => {
+  const [completeRidePanel, setCompleteRidePanel] = useState(false);
+  const completeRidePanelRef = useRef(null);
+
+  useGSAP(
+    function () {
+      gsap.to(completeRidePanelRef.current, {
+        transform: completeRidePanel ? "translateY(0%)" : "translateY(100%)",
+        ease: "power2.out",
+        duration: 0.5,
+      });
+    },
+    [completeRidePanel]
+  );
+
+  return (
+    <div className="h-screen relative">
+      <div className="absolute w-full p-6 top-0 flex items-center justify-between z-10 ">
+        <img
+          className="w-16"
+          src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+          alt=""
+        />
+        <Link
+          to="/captain-home"
+          className=" h-10 w-10 bg-white flex items-center justify-center rounded-full"
+        >
+          <i className="text-lg font-medium ri-logout-box-r-line"></i>
+        </Link>
+      </div>
+      <div className="h-full w-full">
+        <img
+          className="h-full w-full object-cover"
+          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
+          alt="Map"
+        />
+      </div>
+
+      <div
+        className="absolute bottom-0 w-full h-1/5 bg-yellow-300 "
+        onClick={() => {
+          setCompleteRidePanel(true);
+        }}
+      >
+        <h5
+          className="p-1 text-center w-full absolute top-0 "
+          onClick={() => {}}
+        >
+          <i className="text-3xl   text-gray-800 ri-arrow-up-wide-line"></i>
+        </h5>
+        <div className="flex items-center justify-between w-full h-full p-4">
+          <h4 className="text-2xl font-semibold">4 KM away</h4>
+          <button className=" bg-green-600 text-white text-2xl font-semibold p-3 px-10 rounded-lg">
+            Complete Ride
+          </button>
+        </div>
+      </div>
+      <div
+        ref={completeRidePanelRef}
+        className="absolute w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12"
+      >
+        <RideComplete setCompleteRidePanel={setCompleteRidePanel} />
+      </div>
+    </div>
+  );
+};
+
+export default CaptainActiveRide;
