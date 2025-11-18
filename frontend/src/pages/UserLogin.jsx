@@ -2,28 +2,40 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import api from "../utils/axiosInstance.js";
 function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userData, setUserData] = useState(null);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
   const { user, setUser } = useUser();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const user = {
-      email: email,
-      password: password,
+      email: formData.email,
+      password: formData.password,
     };
+    //console.log("USER LOGIN DATA: ", user);
     //setUserData();
-    const res = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/users/login`,
-      user
-    );
-    if (res.status === 201) {
-      const data = res.data;
-      setUserData(data.user);
-      console.log(data);
-      setUser(data.user);
-      navigate("/home");
+    try {
+      const res = await api.post(`/users/login`, user);
+      console.log("user login res", res);
+      if (res.status === 200) {
+        const data = res.data;
+        setUserData(data.user);
+        console.log(data);
+        setUser(data.user);
+        navigate("/home");
+      }
+      return;
+    } catch (error) {
+      console.error("LOGIN ERROR: ", error);
     }
   };
 
@@ -49,7 +61,7 @@ function UserLogin() {
             type="email"
             placeholder="example@email.com"
             className="input"
-            value={email}
+            value={formData.email}
             name="email"
             onChange={handleInput}
           />
@@ -59,7 +71,7 @@ function UserLogin() {
             type="password"
             placeholder="password"
             className="input"
-            value={password}
+            value={formData.password}
             name="password"
             onChange={handleInput}
           />

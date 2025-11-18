@@ -1,21 +1,28 @@
 import React from "react";
 
-const LocationSearchPanel = ({ setVehiclePanelOpen, setPanelOpen }) => {
-  const locations = [
-    "Location 1",
-    "Location 2",
-    "Location 3",
-    "Location 4",
-    "Location 5",
-  ];
+const LocationSearchPanel = ({
+  suggestions,
+  setPickup,
+  setDestination,
+  activeField,
+  setPickupSuggestions,
+  setDestinationSuggestions,
+}) => {
+  const handleLocationSelect = (location) => {
+    if (suggestions === undefined) return;
+    if (activeField === "pickup") {
+      setPickup(location);
+      setPickupSuggestions([]);
+    } else if (activeField === "destination") {
+      setDestination(location);
+      setDestinationSuggestions([]);
+    }
+  };
   return (
     <div>
-      {locations?.map((item, i) => (
+      {suggestions?.map((item, i) => (
         <div
-          onClick={() => {
-            setVehiclePanelOpen(true);
-            setPanelOpen(false);
-          }}
+          onClick={() => handleLocationSelect(item)}
           key={i}
           className="flex gap-4 border-2 p-3 border-gray-50 active:border-black rounded-xl items-center my-2 justify-start"
         >

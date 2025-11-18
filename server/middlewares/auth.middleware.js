@@ -7,6 +7,7 @@ const verifyJWT = async (req, res, next) => {
   //if valid, extract userId from token,
   //find the userObj with userId and attach that userOBJ to req
   //call next();
+  //console.log("VERIFY JWT REQ: ", req.cookies);
   try {
     const token =
       req.cookies?.accessToken ||

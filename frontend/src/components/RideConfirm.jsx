@@ -1,6 +1,14 @@
 import React from "react";
 
-const RideConfirm = ({ setIsLookingForCaptain, setRideConfirmPanelOpen }) => {
+const RideConfirm = ({
+  setIsLookingForCaptain,
+  setRideConfirmPanelOpen,
+  vehicleType,
+  pickup,
+  destination,
+  fare,
+  handleCreateRide,
+}) => {
   return (
     <div>
       <h5
@@ -20,21 +28,21 @@ const RideConfirm = ({ setIsLookingForCaptain, setRideConfirmPanelOpen }) => {
       <div className="flex items-center gap-5 p-3 border-b-2 ">
         <i className="ri-map-pin-user-fill text-2xl"></i>
         <div>
-          <h3 className="text-lg font-bold">562/11-A</h3>
+          <h3 className="text-lg font-bold">{pickup}</h3>
           <p className="text-sm -mt-1 text-gray-600">location</p>
         </div>
       </div>
       <div className="flex items-center gap-5 p-3 border-b-2 ">
         <i className="ri-map-pin-user-fill text-2xl"></i>
         <div>
-          <h3 className="text-lg font-bold">562/11-A</h3>
+          <h3 className="text-lg font-bold">{destination}</h3>
           <p className="text-sm -mt-1 text-gray-600">location</p>
         </div>
       </div>
       <div className="flex items-center gap-5 p-3">
         <i className="ri-currency-line text-2xl"></i>
         <div>
-          <h3 className="text-lg font-medium">₹400</h3>
+          <h3 className="text-lg font-medium">₹{fare?.[vehicleType]}</h3>
           <p className="text-sm -mt-1 text-gray-600">Cash</p>
         </div>
       </div>
@@ -43,6 +51,7 @@ const RideConfirm = ({ setIsLookingForCaptain, setRideConfirmPanelOpen }) => {
         onClick={() => {
           setIsLookingForCaptain(true);
           setRideConfirmPanelOpen(false);
+          handleCreateRide();
         }}
       >
         Confirm

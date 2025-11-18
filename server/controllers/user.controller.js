@@ -51,9 +51,11 @@ const loginUser = asyncHandler(async (req, res) => {
       );
   }
   const { email, password } = req.body;
+  //console.log("LOGIN REQ BODY: ", req.body);
   const fetchedUser = await loginUserService({ email, password });
   //generate accesstoken,set accesstoken to cookies
   const accessToken = await fetchedUser.generateAccessToken();
+  //console.log("ACCESS TOKEN: ", accessToken);
   // how to set cookies??
 
   return res

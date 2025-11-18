@@ -34,7 +34,7 @@ userRouter
     ],
     loginUser
   );
-userRouter.route("/profile").get(verifyJWT, getCurrentUser);
+userRouter.route("/current-user").get(verifyJWT, getCurrentUser);
 userRouter.route("/logout").get(verifyJWT, logoutUser);
 
 export default userRouter;

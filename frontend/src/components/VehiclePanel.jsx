@@ -1,6 +1,11 @@
 import React from "react";
 
-const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
+const VehiclePanel = ({
+  setVehiclePanelOpen,
+  setRideConfirmPanelOpen,
+  fare,
+  setVehicleType,
+}) => {
   return (
     <div>
       <h5
@@ -14,6 +19,7 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
         onClick={() => {
           setRideConfirmPanelOpen(true);
           setVehiclePanelOpen(false);
+          setVehicleType("car");
         }}
         className="flex border-2 border-black rounded-xl items-center justify-between px-6 py-3 mb-2"
       >
@@ -33,9 +39,16 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
           <h5 className="font-medium text-sm">2 mins away</h5>
           <p className="font-normal text-xs">Affordable, compact rides</p>
         </div>
-        <h2 className="font-semibold text-lg">193rs</h2>
+        <h2 className="font-semibold text-lg">₹{fare?.car}</h2>
       </div>
-      <div className="flex border-2 border-black rounded-xl items-center justify-between px-6 py-3 mb-2">
+      <div
+        onClick={() => {
+          setRideConfirmPanelOpen(true);
+          setVehiclePanelOpen(false);
+          setVehicleType("auto");
+        }}
+        className="flex border-2 border-black rounded-xl items-center justify-between px-6 py-3 mb-2"
+      >
         <img
           className="h-10"
           src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
@@ -43,7 +56,7 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
         />
         <div className="ml-2 w-1/2">
           <h4 className="font-medium text-base ">
-            UberGo
+            UberAuto
             <span>
               <i className="ri-user-3-fill"></i>4
             </span>
@@ -51,9 +64,16 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
           <h5 className="font-medium text-sm">2 mins away</h5>
           <p className="font-normal text-xs">Affordable, compact rides</p>
         </div>
-        <h2 className="font-semibold text-lg">193rs</h2>
+        <h2 className="font-semibold text-lg">₹{fare?.auto}</h2>
       </div>
-      <div className="flex border-2 border-black rounded-xl items-center justify-between px-6 py-3 mb-2">
+      <div
+        onClick={() => {
+          setRideConfirmPanelOpen(true);
+          setVehiclePanelOpen(false);
+          setVehicleType("moto");
+        }}
+        className="flex border-2 border-black rounded-xl items-center justify-between px-6 py-3 mb-2"
+      >
         <img
           className="h-10"
           src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
@@ -62,7 +82,7 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
 
         <div className="ml-2 w-1/2">
           <h4 className="font-medium text-base ">
-            UberGo
+            UberMoto
             <span>
               <i className="ri-user-3-fill"></i>4
             </span>
@@ -70,7 +90,7 @@ const VehiclePanel = ({ setVehiclePanelOpen, setRideConfirmPanelOpen }) => {
           <h5 className="font-medium text-sm">2 mins away</h5>
           <p className="font-normal text-xs">Affordable, compact rides</p>
         </div>
-        <h2 className="font-semibold text-lg">193rs</h2>
+        <h2 className="font-semibold text-lg">₹{fare?.moto}</h2>
       </div>
     </div>
   );

@@ -2,7 +2,8 @@ import { ApiError } from "../utils/apiError.js";
 import { Ride } from "../models/ride.model.js";
 import { fetchDistanceTime } from "../services/map.service.js";
 import crypto from "crypto";
-export async function getFare(pickup, destination) {
+
+export async function calculateFare(pickup, destination) {
   if (!pickup || !destination) {
     throw new ApiError(400, "Pickup and destination are required");
   }
@@ -65,7 +66,7 @@ export const createRideService = async (
     throw new ApiError(400, "All fields are required");
   }
 
-  const fare = await getFare(pickup, destination);
+  const fare = await calculateFare(pickup, destination);
 
   const ride = Ride.create({
     user,

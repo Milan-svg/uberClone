@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { act, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import axios from "axios";
+import toast from "react-hot-toast";
 import "remixicon/fonts/remixicon.css";
 import { panelAnimate } from "../utils/utils.js";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +11,8 @@ import VehiclePanel from "../components/VehiclePanel";
 import RideConfirm from "../components/RideConfirm";
 import LookingForCaptain from "../components/LookingForCaptain";
 import WaitingForCaptain from "../components/WaitingForCaptain";
-
+import api from "../utils/axiosInstance.js";
+import { useUser } from "../context/UserContext.jsx";
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
@@ -19,6 +21,14 @@ const Home = () => {
   const [rideConfirmPanelOpen, setRideConfirmPanelOpen] = useState(false);
   const [isLookingForCaptain, setIsLookingForCaptain] = useState(false);
   const [isWaitingForCaptain, setIsWaitingForCaptain] = useState(false);
+  const [pickupSuggestions, setPickupSuggestions] = useState(null);
+  const [destinationSuggestions, setDestinationSuggestions] = useState(null);
+  const [activeField, setActiveField] = useState(null);
+  const [fare, setFare] = useState(null);
+  const [vehicleType, setVehicleType] = useState(null);
+  const pickupInputRef = useRef(null);
+  const destinationInputRef = useRef(null);
+  const debounceTimer = useRef(null);
   const rideConfirmPanelRef = useRef(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
@@ -27,11 +37,118 @@ const Home = () => {
   const waitingForCaptainRef = useRef(null);
 
   const navigate = useNavigate();
-
+  const { user } = useUser();
+  // if (user) {
+  //   console.log("current user: ", user);
+  // } else {
+  //   console.log("no user logged in");
+  // }
   const submitHandler = (e) => {
     e.preventDefault();
   };
 
+  const handlePickupChang = async (e) => {
+    setPickup(e.target.value);
+    if (e.target.value.length < 3) {
+      setPickupSuggestions(null);
+      return;
+    }
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    debounceTimer.current = setTimeout(async () => {
+      const url = `${
+        import.meta.env.VITE_BASE_URL
+      }/map/get-autocomplete-suggestions`;
+      //console.log("CALLING URL: ", url);
+      try {
+        const res = await axios.get(url, {
+          params: { input: e.target.value },
+        });
+
+        setPickupSuggestions(res.data.data);
+        //console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
+  };
+
+  const handleDestinationChange = async (e) => {
+    setDestination(e.target.value);
+    if (e.target.value.length < 3) {
+      setDestinationSuggestions(null);
+      return;
+    }
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    debounceTimer.current = setTimeout(async () => {
+      const url = `${
+        import.meta.env.VITE_BASE_URL
+      }/map/get-autocomplete-suggestions`;
+      //console.log("CALLING URL: ", url);
+      try {
+        const res = await axios.get(url, {
+          params: { input: e.target.value },
+        });
+
+        setDestinationSuggestions(res.data.data);
+        //console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
+  };
+  useEffect(() => {
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, []);
+  const handleFindTrip = async () => {
+    if (!pickup || !destination) {
+      toast.error("pickup and destination are required");
+      return;
+    }
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
+        {
+          params: { pickup: pickup, destination: destination },
+        }
+      );
+      if (res.data.statusCode === 200) {
+        //console.log("FARE RESPONSE: ", res);
+        setFare(res.data.data);
+        setPickupSuggestions(null);
+        setDestinationSuggestions(null);
+        setPanelOpen(false);
+        setVehiclePanelOpen(true);
+      }
+    } catch (error) {
+      console.log("FIND TRIP ERROR: ", error);
+    }
+  };
+
+  const handleCreateRide = async () => {
+    if (!pickup || !destination || !vehicleType) {
+      console.error("pickup, destination and vehicleType are required");
+      return;
+    }
+    try {
+      const res = await api.post(`/rides/create-ride`, {
+        pickup,
+        destination,
+        vehicleType,
+      });
+      console.log("CREATE RIDE RESPONSE: ", res);
+    } catch (error) {
+      console.error("CREATE RIDE ERROR: ", error);
+    }
+  };
+  //Animations
   useGSAP(
     function () {
       if (panelOpen) {
@@ -59,52 +176,12 @@ const Home = () => {
     [panelOpen]
   );
   panelAnimate(vehiclePanelRef, vehiclePanelOpen);
-  // useGSAP(
-  //   function () {
-  //     gsap.to(vehiclePanelRef.current, {
-  //       transform: vehiclePanelOpen ? "translateY(0%)" : "translateY(100%)",
-  //       ease: "power2.out",
-  //       duration: 0.5,
-  //     });
-  //   },
-  //   [vehiclePanelOpen]
-  // );
 
   panelAnimate(rideConfirmPanelRef, rideConfirmPanelOpen);
-  // useGSAP(
-  //   function () {
-  //     gsap.to(rideConfirmPanelRef.current, {
-  //       transform: rideConfirmPanelOpen ? "translateY(0%)" : "translateY(100%)",
-  //       ease: "power2.out",
-  //       duration: 0.5,
-  //     });
-  //   },
-  //   [rideConfirmPanelOpen]
-  // );
 
   panelAnimate(LookingForCaptainRef, isLookingForCaptain);
-  // useGSAP(
-  //   function () {
-  //     gsap.to(LookingForCaptainRef.current, {
-  //       transform: isLookingForCaptain ? "translateY(0%)" : "translateY(100%)",
-  //       ease: "power2.out",
-  //       duration: 0.5,
-  //     });
-  //   },
-  //   [isLookingForCaptain]
-  // );
 
   panelAnimate(waitingForCaptainRef, isWaitingForCaptain);
-  // useGSAP(
-  //   function () {
-  //     gsap.to(waitingForCaptainRef.current, {
-  //       transform: isWaitingForCaptain ? "translateY(0%)" : "translateY(100%)",
-  //       ease: "power2.out",
-  //       duration: 0.5,
-  //     });
-  //   },
-  //   [isWaitingForCaptain]
-  // );
 
   return (
     <div className="h-screen relative overflow-hidden">
@@ -145,9 +222,12 @@ const Home = () => {
             <input
               onClick={() => {
                 setPanelOpen(true);
+                setActiveField("pickup");
               }}
+              onFocus={() => setActiveField("pickup")}
               value={pickup}
-              onChange={(e) => setPickup(e.target.value)}
+              ref={pickupInputRef}
+              onChange={handlePickupChang}
               className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full"
               type="text"
               placeholder="Add a pick-up location"
@@ -155,22 +235,36 @@ const Home = () => {
             <input
               onClick={() => {
                 setPanelOpen(true);
+                setActiveField("destination");
               }}
+              onFocus={() => setActiveField("destination")}
+              ref={destinationInputRef}
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={handleDestinationChange}
               className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full  mt-3"
               type="text"
               placeholder="Enter your destination"
             />
           </form>
-          <button className="bg-black text-white px-4 py-2 rounded-lg mt-3 w-full">
+          <button
+            className="bg-black text-white px-4 py-2 rounded-lg mt-3 w-full"
+            onClick={handleFindTrip}
+          >
             Find Trip
           </button>
         </div>
         <div ref={panelRef} className="bg-white h-0">
           <LocationSearchPanel
-            setVehiclePanelOpen={setVehiclePanelOpen}
-            setPanelOpen={setPanelOpen}
+            suggestions={
+              activeField === "pickup"
+                ? pickupSuggestions
+                : destinationSuggestions
+            }
+            activeField={activeField}
+            setPickup={setPickup}
+            setDestination={setDestination}
+            setPickupSuggestions={setPickupSuggestions}
+            setDestinationSuggestions={setDestinationSuggestions}
           />
         </div>
       </div>
@@ -182,6 +276,8 @@ const Home = () => {
         <VehiclePanel
           setRideConfirmPanelOpen={setRideConfirmPanelOpen}
           setVehiclePanelOpen={setVehiclePanelOpen}
+          fare={fare}
+          setVehicleType={setVehicleType}
         />
       </div>
       {/* Ride Search Panel */}
@@ -192,6 +288,11 @@ const Home = () => {
         <RideConfirm
           setIsLookingForCaptain={setIsLookingForCaptain}
           setRideConfirmPanelOpen={setRideConfirmPanelOpen}
+          vehicleType={vehicleType}
+          pickup={pickup}
+          destination={destination}
+          fare={fare}
+          handleCreateRide={handleCreateRide}
         />
       </div>
       {/* Searching for a ride */}

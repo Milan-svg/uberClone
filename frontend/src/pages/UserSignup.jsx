@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
+import api from "../utils/axiosInstance.js";
+
 function UserSignup() {
   const [userData, setUserData] = useState(null);
   const [formData, setFormData] = useState({
@@ -29,11 +31,13 @@ function UserSignup() {
       email: formData.email,
       password: formData.password,
     };
-    const res = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/users/register`,
-      user
-    );
-    console.log(res);
+    const res = await api.post("/users/register", user);
+
+    // axios.post(
+    //   `${import.meta.env.VITE_BASE_URL}/users/register`,
+    //   user
+    // );
+    console.log("USER SIGNUP RES: ", res);
     if (res.status === 201) {
       const data = res.data;
       setUserData(data.user);

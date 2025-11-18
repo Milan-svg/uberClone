@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
 import Start from "./pages/Start";
 import UserLogin from "./pages/UserLogin";
@@ -30,6 +28,7 @@ function App() {
           <Route path="/captain-riding" element={<CaptainActiveRide />} />
         </Route>
       </Routes>
+      <Toaster />
     </>
   );
 }

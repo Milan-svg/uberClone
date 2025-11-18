@@ -10,11 +10,11 @@ const mapRouter = Router();
 
 mapRouter
   .route("/get-coordinates")
-  .post([query("address").isString().isLength({ min: 3 })], getCoordinates);
+  .get([query("address").isString().isLength({ min: 3 })], getCoordinates);
 
 mapRouter
   .route("/get-distance-time")
-  .post(
+  .get(
     [
       query("origin").isString().isLength({ min: 3 }),
       query("destination").isString().isLength({ min: 3 }),
@@ -24,7 +24,7 @@ mapRouter
 
 mapRouter
   .route("/get-autocomplete-suggestions")
-  .post(
+  .get(
     [query("input").isString().isLength({ min: 3 })],
     getAutoCompleteSuggestions
   );
