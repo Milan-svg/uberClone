@@ -2,9 +2,11 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
+import api from "../utils/axiosInstance";
 
 const captainContext = createContext();
 
@@ -13,14 +15,30 @@ export const CaptainProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        setIsLoading(true);
+        const res = await api.get("/captains/get-current-captain");
+        console.log("CAPTAIN FETCH RES: ", res);
+        if (res.status === 200) {
+          setCaptain(res.data.data);
+        }
+      } catch (err) {
+        console.error("Captain auth failed at captainContext, error: ", err);
+        setCaptain(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
   const updateCaptain = useCallback((captainData) => {
     setCaptain(captainData);
   }, []);
   const clearCaptain = useCallback(() => {
     setCaptain(null);
-  }, []);
-  const setLoadingState = useCallback((loading) => {
-    setIsLoading(loading);
   }, []);
 
   const setErrorState = useCallback((err) => {

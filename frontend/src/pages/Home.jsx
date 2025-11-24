@@ -13,6 +13,7 @@ import LookingForCaptain from "../components/LookingForCaptain";
 import WaitingForCaptain from "../components/WaitingForCaptain";
 import api from "../utils/axiosInstance.js";
 import { useUser } from "../context/UserContext.jsx";
+import { useSocket } from "../context/SocketContext.jsx";
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
@@ -38,14 +39,13 @@ const Home = () => {
 
   const navigate = useNavigate();
   const { user } = useUser();
-  // if (user) {
-  //   console.log("current user: ", user);
-  // } else {
-  //   console.log("no user logged in");
-  // }
-  const submitHandler = (e) => {
-    e.preventDefault();
-  };
+  const { socket } = useSocket();
+  // useEffect(() => {
+  //   socket.emit("join", {
+  //     userType: "user",
+  //     userId: user._id,
+  //   });
+  // }, [user]);
 
   const handlePickupChang = async (e) => {
     setPickup(e.target.value);
@@ -57,15 +57,10 @@ const Home = () => {
       clearTimeout(debounceTimer.current);
     }
     debounceTimer.current = setTimeout(async () => {
-      const url = `${
-        import.meta.env.VITE_BASE_URL
-      }/map/get-autocomplete-suggestions`;
-      //console.log("CALLING URL: ", url);
       try {
-        const res = await axios.get(url, {
+        const res = await api.get("/map/get-autocomplete-suggestions", {
           params: { input: e.target.value },
         });
-
         setPickupSuggestions(res.data.data);
         //console.log(res);
       } catch (error) {
@@ -84,12 +79,8 @@ const Home = () => {
       clearTimeout(debounceTimer.current);
     }
     debounceTimer.current = setTimeout(async () => {
-      const url = `${
-        import.meta.env.VITE_BASE_URL
-      }/map/get-autocomplete-suggestions`;
-      //console.log("CALLING URL: ", url);
       try {
-        const res = await axios.get(url, {
+        const res = await api.get("/map/get-autocomplete-suggestions", {
           params: { input: e.target.value },
         });
 
@@ -107,11 +98,13 @@ const Home = () => {
       }
     };
   }, []);
+
   const handleFindTrip = async () => {
     if (!pickup || !destination) {
       toast.error("pickup and destination are required");
       return;
     }
+    //NOTE- add proper user error feedback for location less than 3 chars, and locations that arent suggested in the suggestion panel
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
@@ -146,6 +139,15 @@ const Home = () => {
       console.log("CREATE RIDE RESPONSE: ", res);
     } catch (error) {
       console.error("CREATE RIDE ERROR: ", error);
+    }
+  };
+  const handleLogout = async () => {
+    try {
+      console.log("logout btn pressed");
+      await api.get("/users/logout");
+      navigate("/");
+    } catch (error) {
+      console.error("LOGOUT ERROR: ", error);
     }
   };
   //Animations
@@ -190,6 +192,12 @@ const Home = () => {
         src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
         alt=""
       />
+      <button
+        className="w-16 absolute right-5 top-5 z-1 "
+        onClick={handleLogout}
+      >
+        <i className="ri-logout-box-line text-3xl"></i>
+      </button>
 
       <div className="h-full w-full">
         <img

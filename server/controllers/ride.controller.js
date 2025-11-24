@@ -14,9 +14,14 @@ const createRide = asyncHandler(async (req, res) => {
   }
   // console.log("REQ:", req.body);
   const { pickup, destination, vehicleType } = req?.body;
-  const user = req.user;
-  console.log("USER:", user);
-  const ride = await createRideService(user, pickup, destination, vehicleType);
+  const userId = req?.user._id;
+  //console.log("USERId:", userId);
+  const ride = await createRideService(
+    userId,
+    pickup,
+    destination,
+    vehicleType
+  );
   return res
     .status(200)
     .json(new ApiResponse(201, ride, "Ride created successfully"));

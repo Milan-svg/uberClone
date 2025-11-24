@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useCaptain } from "../context/CaptainContext";
-
+import api from "../utils/axiosInstance";
 function CaptainLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,18 +15,19 @@ function CaptainLogin() {
       email: email,
       password: password,
     };
-    console.log("FORMDATA-", formData);
-    const res = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/captains/login`,
-      formData
-    );
-    console.log("RES: ", res);
-    if (res.status === 200) {
-      const data = res.data.data;
-      updateCaptain(data.captain);
-      setEmail("");
-      setPassword("");
-      navigate("/home");
+    //console.log("FORMDATA-", formData);
+    try {
+      const res = await api.post(`/captains/login`, formData);
+      //console.log("RES: ", res);
+      if (res.status === 200) {
+        const data = res.data.data;
+        updateCaptain(data.captain);
+        setEmail("");
+        setPassword("");
+        navigate("/captain-home");
+      }
+    } catch (err) {
+      console.error("ERROR WHILE CAPTAIN LOGIN: ", err);
     }
   };
   return (

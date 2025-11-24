@@ -1,9 +1,12 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import {
+  getCurrentCaptain,
   loginCaptain,
+  logoutCaptain,
   registerCaptain,
 } from "../controllers/captain.controller.js";
+import { verifyCaptainJWT } from "../middlewares/auth.middleware.js";
 const captainRouter = Router();
 
 captainRouter
@@ -44,5 +47,10 @@ captainRouter
     ],
     loginCaptain
   );
+captainRouter.route("/logout").get(verifyCaptainJWT, logoutCaptain);
+
+captainRouter
+  .route("/get-current-captain")
+  .get(verifyCaptainJWT, getCurrentCaptain);
 
 export default captainRouter;

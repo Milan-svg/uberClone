@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-const CaptainDetails = () => {
+const CaptainDetails = ({ captain }) => {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -10,7 +10,9 @@ const CaptainDetails = () => {
             src="https://static.vecteezy.com/system/resources/previews/001/131/187/large_2x/serious-man-portrait-real-people-high-definition-grey-background-photo.jpg"
             alt=""
           />
-          <h4 className="text-xl font-semibold capitalize">Milan Panchl</h4>
+          <h4 className="text-xl font-semibold capitalize">
+            {captain?.fullname?.firstname}
+          </h4>
         </div>
         <div>
           <h4 className="text-xl font-semibold">₹295.20</h4>

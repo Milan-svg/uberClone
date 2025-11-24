@@ -5,13 +5,15 @@ import { Link } from "react-router";
 import RidePopup from "../components/RidePopup";
 import CaptainDetails from "../components/CaptainDetails";
 import CaptainRideConfirmPanel from "../components/CaptainRideConfirmPanel";
+import { useCaptain } from "../context/CaptainContext";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(true);
   const [confirmRidePopupPanel, setConfirmRidePopupPanel] = useState(false);
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
-
+  const { captain } = useCaptain();
+  console.log("CPATAIN CONTEXT: ", captain);
   useGSAP(
     function () {
       gsap.to(ridePopupPanelRef.current, {
@@ -57,7 +59,7 @@ const CaptainHome = () => {
         />
       </div>
       <div className="h-2/5 p-6">
-        <CaptainDetails />
+        <CaptainDetails captain={captain} />
       </div>
       <div
         ref={ridePopupPanelRef}

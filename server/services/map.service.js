@@ -1,4 +1,5 @@
 import { ApiError } from "../utils/apiError.js";
+import { Captain } from "../models/captain.model.js";
 import axios from "axios";
 
 export const fetchCoordinates = async (address) => {
@@ -64,4 +65,15 @@ export const fetchAutoCompleteSuggestions = async (input) => {
   } else {
     throw new ApiError(400, "Unable to fetch suggestions");
   }
+};
+
+export const fetchCaptainsInRadius = async (ltd, lng, radius) => {
+  const captains = await Captain.find({
+    location: {
+      $geoWithin: {
+        $centerSphere: [[ltd, lng], radius / 6371],
+      },
+    },
+  });
+  return captains;
 };

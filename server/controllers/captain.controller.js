@@ -59,12 +59,13 @@ const loginCaptain = asyncHandler(async (req, res) => {
   if (!isMatch) {
     throw new ApiError(401, "Invalid password");
   }
-  const accessToken = captain.generateAccessToken();
+  const accessToken = await captain.generateAccessToken();
   return res
     .status(200)
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
+      maxAge: 6 * 60 * 60 * 1000,
     })
     .json(
       new ApiResponse(
@@ -74,4 +75,22 @@ const loginCaptain = asyncHandler(async (req, res) => {
       )
     );
 });
-export { registerCaptain, loginCaptain };
+const logoutCaptain = asyncHandler(async (req, res) => {
+  //clear the cookies
+  return res
+    .status(200)
+    .clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+    })
+    .json(new ApiResponse(200, {}, "logout successfull"));
+});
+
+const getCurrentCaptain = asyncHandler(async (req, res) => {
+  const fetchedCaptain = req?.user;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, fetchedCaptain, "captain fetched successfully"));
+});
+export { registerCaptain, loginCaptain, logoutCaptain, getCurrentCaptain };

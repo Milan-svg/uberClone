@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
         //console.log("CURRENT USER RES: ", res);
         setUser(res.data.data.user);
       } catch (error) {
-        console.log("Not authenticated, error: ", error);
+        console.error("User auth failed at userContext, error: ", error);
         setUser(null);
       } finally {
         setIsLoading(false);

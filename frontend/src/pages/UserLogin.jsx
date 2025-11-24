@@ -13,7 +13,7 @@ function UserLogin() {
     password: "",
   });
   const navigate = useNavigate();
-  const { user, setUser } = useUser();
+  const { user, updateUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,8 +29,8 @@ function UserLogin() {
       if (res.status === 200) {
         const data = res.data;
         setUserData(data.user);
-        console.log(data);
-        setUser(data.user);
+        //console.log(data);
+        updateUser(data.user);
         navigate("/home");
       }
       return;

@@ -11,21 +11,26 @@ import MobileLayout from "./components/MobileLayout";
 import CaptainHome from "./pages/CaptainHome";
 import ActiveRide from "./pages/ActiveRide";
 import CaptainActiveRide from "./pages/CaptainActiveRide";
+import TestSocket from "./pages/SocketTest";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <>
       <Routes>
         <Route element={<MobileLayout />}>
+          <Route path="/socket" element={<TestSocket />} />
           <Route path="/" element={<Start />} />
-          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<UserSignup />} />
-          <Route path="/riding" element={<ActiveRide />} />
           <Route path="/captain-login" element={<CaptainLogin />} />
           <Route path="/captain-signup" element={<CaptainSignup />} />
-          <Route path="/captain-home" element={<CaptainHome />} />
-          <Route path="/captain-riding" element={<CaptainActiveRide />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/riding" element={<ActiveRide />} />
+            <Route path="/captain-home" element={<CaptainHome />} />
+            <Route path="/captain-riding" element={<CaptainActiveRide />} />
+          </Route>
         </Route>
       </Routes>
       <Toaster />

@@ -104,7 +104,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 // });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  console.log("REQ: ", req);
+  //console.log("REQ: ", req); caused a headache lol
   const fetchedUser = req.user;
   return res
     .status(200)

@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
+import { initializeSocket } from "./utils/socket.js";
+import { createServer } from "http";
 const app = express();
 
 //middlewares
@@ -13,7 +15,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "12kb" }));
 app.use(cookieParser());
 //connect to mongodb
 dotenv.config({ path: "./.env" });
@@ -45,7 +47,11 @@ app.use("/api/v1/rides", rideRouter);
 // });
 
 app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+const server = createServer(app);
+initializeSocket(server);
+server.listen(PORT, () => {
   console.log("server running on:", PORT);
 });

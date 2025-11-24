@@ -75,7 +75,7 @@ export const createRideService = async (
     otp: generateOtp(6),
     fare: fare[vehicleType],
   });
-
+  console.log("RIDE: ", ride);
   return ride;
 };
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useCaptain } from "../context/CaptainContext";
+import api from "../utils/axiosInstance";
 function CaptainSignup() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -40,17 +41,17 @@ function CaptainSignup() {
       },
     };
     console.log("FORMDATA:-", captain);
-    const res = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/captains/register`,
-      captain
-    );
-
-    //console.log("RES:", res);
-    if (res.status === 201) {
-      const data = res.data.data;
-      //console.log("CAPTAIN: ", data.captain);
-      updateCaptain(data.captain);
-      navigate("/home");
+    try {
+      const res = await api.post(`/captains/register`, captain);
+      //console.log("RES:", res);
+      if (res.status === 201) {
+        const data = res.data.data;
+        //console.log("CAPTAIN: ", data.captain);
+        updateCaptain(data.captain);
+        navigate("/captain-home");
+      }
+    } catch (err) {
+      console.error("ERROR WHILE REGISTERING CAPTAIN: ", err);
     }
   };
   return (
