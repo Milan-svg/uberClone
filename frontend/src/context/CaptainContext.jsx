@@ -20,7 +20,7 @@ export const CaptainProvider = ({ children }) => {
       try {
         setIsLoading(true);
         const res = await api.get("/captains/get-current-captain");
-        console.log("CAPTAIN FETCH RES: ", res);
+        //console.log("CAPTAIN FETCH RES: ", res);
         if (res.status === 200) {
           setCaptain(res.data.data);
         }

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosInstance.js";
 function UserLogin() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState(null);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,10 +23,9 @@ function UserLogin() {
     //setUserData();
     try {
       const res = await api.post(`/users/login`, user);
-      console.log("user login res", res);
+      console.log("user login res (userlogin.jsx):", res);
       if (res.status === 200) {
-        const data = res.data;
-        setUserData(data.user);
+        const data = res.data.data;
         //console.log(data);
         updateUser(data.user);
         navigate("/home");

@@ -40,6 +40,7 @@ const Home = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { socket } = useSocket();
+  //console.log(user);
   // useEffect(() => {
   //   socket.emit("join", {
   //     userType: "user",

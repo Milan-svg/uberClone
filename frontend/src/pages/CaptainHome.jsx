@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import RidePopup from "../components/RidePopup";
 import CaptainDetails from "../components/CaptainDetails";
 import CaptainRideConfirmPanel from "../components/CaptainRideConfirmPanel";
 import { useCaptain } from "../context/CaptainContext";
+import api from "../utils/axiosInstance";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(true);
@@ -13,7 +14,8 @@ const CaptainHome = () => {
   const ridePopupPanelRef = useRef(null);
   const confirmRidePopupPanelRef = useRef(null);
   const { captain } = useCaptain();
-  console.log("CPATAIN CONTEXT: ", captain);
+  const navigate = useNavigate();
+  //console.log("CPATAIN CONTEXT: ", captain);
   useGSAP(
     function () {
       gsap.to(ridePopupPanelRef.current, {
@@ -36,6 +38,16 @@ const CaptainHome = () => {
     },
     [confirmRidePopupPanel]
   );
+  const handleLogout = async () => {
+    try {
+      const res = await api.get("/captains/logout");
+      if (res.status === 200) {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("CAPTAIN LOGOUT ERROR: ", err);
+    }
+  };
   return (
     <div className="h-screen relative">
       <div className="absolute p-6 top-0 flex items-center justify-between w-full">
@@ -44,12 +56,12 @@ const CaptainHome = () => {
           src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
           alt=""
         />
-        <Link
-          to="/captain-home"
+        <button
           className=" h-10 w-10 bg-white flex items-center justify-center rounded-full"
+          onClick={handleLogout}
         >
           <i className="text-lg font-medium ri-logout-box-r-line"></i>
-        </Link>
+        </button>
       </div>
       <div className="h-3/5">
         <img
