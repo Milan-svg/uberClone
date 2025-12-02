@@ -6,7 +6,7 @@ import {
   logoutCaptain,
   registerCaptain,
 } from "../controllers/captain.controller.js";
-import { verifyCaptainJWT } from "../middlewares/auth.middleware.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 const captainRouter = Router();
 
 captainRouter
@@ -47,10 +47,8 @@ captainRouter
     ],
     loginCaptain
   );
-captainRouter.route("/logout").get(verifyCaptainJWT, logoutCaptain);
+captainRouter.route("/logout").get(verifyJWT, logoutCaptain);
 
-captainRouter
-  .route("/get-current-captain")
-  .get(verifyCaptainJWT, getCurrentCaptain);
+captainRouter.route("/get-current-captain").get(verifyJWT, getCurrentCaptain);
 
 export default captainRouter;

@@ -1,12 +1,21 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import RideComplete from "../components/RideComplete";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useSocket } from "../context/SocketContext";
+import { useRide } from "../context/RideContext";
 
 const CaptainActiveRide = () => {
   const [completeRidePanel, setCompleteRidePanel] = useState(false);
   const completeRidePanelRef = useRef(null);
+  const {
+    currentRide: ride,
+    rideStatus,
+    isSyncing,
+    userType,
+    syncRideState,
+  } = useRide();
 
   useGSAP(
     function () {
@@ -65,7 +74,11 @@ const CaptainActiveRide = () => {
         ref={completeRidePanelRef}
         className="absolute w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12"
       >
-        <RideComplete setCompleteRidePanel={setCompleteRidePanel} />
+        <RideComplete
+          ride={ride}
+          setCompleteRidePanel={setCompleteRidePanel}
+          syncRideState={syncRideState}
+        />
       </div>
     </div>
   );

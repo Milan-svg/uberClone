@@ -14,6 +14,7 @@ import WaitingForCaptain from "../components/WaitingForCaptain";
 import api from "../utils/axiosInstance.js";
 import { useUser } from "../context/UserContext.jsx";
 import { useSocket } from "../context/SocketContext.jsx";
+import { useRide } from "../context/RideContext.jsx";
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
@@ -36,17 +37,33 @@ const Home = () => {
   const vehiclePanelRef = useRef(null);
   const LookingForCaptainRef = useRef(null);
   const waitingForCaptainRef = useRef(null);
-
   const navigate = useNavigate();
   const { user } = useUser();
   const { socket } = useSocket();
+  const [createdRide, setCreatedRide] = useState(null);
+
+  const {
+    currentRide: ride,
+    rideStatus,
+    isSyncing,
+    userType,
+    syncRideState,
+  } = useRide();
   //console.log(user);
-  // useEffect(() => {
-  //   socket.emit("join", {
-  //     userType: "user",
-  //     userId: user._id,
-  //   });
-  // }, [user]);
+  useEffect(() => {
+    socket.emit("join", {
+      userType: "user",
+      userId: user._id,
+    });
+    //syncRideState
+    socket.on("ride-confirmed", socketConfirmRide);
+    socket.on("ride-started", socketStartRide);
+
+    return () => {
+      socket.off("ride-confirmed", socketConfirmRide);
+      socket.off("ride-started", socketStartRide);
+    };
+  }, [user, socket]);
 
   const handlePickupChang = async (e) => {
     setPickup(e.target.value);
@@ -107,12 +124,9 @@ const Home = () => {
     }
     //NOTE- add proper user error feedback for location less than 3 chars, and locations that arent suggested in the suggestion panel
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/rides/get-fare`,
-        {
-          params: { pickup: pickup, destination: destination },
-        }
-      );
+      const res = await api.get(`/rides/get-fare`, {
+        params: { pickup: pickup, destination: destination },
+      });
       if (res.data.statusCode === 200) {
         //console.log("FARE RESPONSE: ", res);
         setFare(res.data.data);
@@ -137,11 +151,38 @@ const Home = () => {
         destination,
         vehicleType,
       });
-      console.log("CREATE RIDE RESPONSE: ", res);
+      if (res.status === 200) {
+        await syncRideState();
+        console.log("CREATE RIDE RESPONSE: ", res);
+        setCreatedRide(res.data.data);
+      }
     } catch (error) {
       console.error("CREATE RIDE ERROR: ", error);
     }
   };
+
+  useEffect(() => {
+    const checkRide = async () => {
+      const ride = await syncRideState();
+      if (!ride) {
+        setPanelOpen(false);
+        setVehiclePanelOpen(false);
+        setRideConfirmPanelOpen(false);
+        setIsLookingForCaptain(false);
+        setIsWaitingForCaptain(false);
+      }
+      if (ride && ["pending"].includes(ride.status)) {
+        setIsLookingForCaptain(true);
+      }
+      if (ride && ["accepted"].includes(ride.status)) {
+        setIsWaitingForCaptain(true);
+      }
+      if (ride && ["ongoing"].includes(ride.status)) {
+        navigate("/riding");
+      }
+    };
+    checkRide();
+  }, []);
   const handleLogout = async () => {
     try {
       console.log("logout btn pressed");
@@ -150,6 +191,18 @@ const Home = () => {
     } catch (error) {
       console.error("LOGOUT ERROR: ", error);
     }
+  };
+  const socketConfirmRide = async (data) => {
+    await syncRideState();
+    setIsLookingForCaptain(false);
+    setIsWaitingForCaptain(true);
+    console.log("RIDE CONFIRMED DATa: ", data);
+  };
+  const socketStartRide = async (data) => {
+    console.log("RIDE Started: ", data);
+    setIsWaitingForCaptain(false);
+    await syncRideState();
+    navigate("/riding");
   };
   //Animations
   useGSAP(
@@ -309,14 +362,20 @@ const Home = () => {
         ref={LookingForCaptainRef}
         className="absolute z-10 bottom-0 bg-white w-full p-6"
       >
-        <LookingForCaptain setIsLookingForCaptain={setIsLookingForCaptain} />
+        <LookingForCaptain
+          createdRide={createdRide}
+          setIsLookingForCaptain={setIsLookingForCaptain}
+        />
       </div>
       {/* Waiting for captain */}
       <div
         ref={waitingForCaptainRef}
         className="absolute z-10 bottom-0 bg-white w-full p-6"
       >
-        <WaitingForCaptain setIsWaitingForCaptain={setIsWaitingForCaptain} />
+        <WaitingForCaptain
+          ride={ride}
+          setIsWaitingForCaptain={setIsWaitingForCaptain}
+        />
       </div>
     </div>
   );

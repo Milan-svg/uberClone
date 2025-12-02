@@ -88,9 +88,12 @@ const logoutCaptain = asyncHandler(async (req, res) => {
 
 const getCurrentCaptain = asyncHandler(async (req, res) => {
   const fetchedCaptain = req?.user;
-
+  const isCaptain = await Captain.findById(fetchedCaptain._id);
+  if (!isCaptain) {
+    throw new ApiError(404, "Captain not found");
+  }
   return res
     .status(200)
-    .json(new ApiResponse(200, fetchedCaptain, "captain fetched successfully"));
+    .json(new ApiResponse(200, isCaptain, "captain fetched successfully"));
 });
 export { registerCaptain, loginCaptain, logoutCaptain, getCurrentCaptain };

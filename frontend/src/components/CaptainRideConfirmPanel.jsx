@@ -2,17 +2,35 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../utils/axiosInstance";
 
 const CaptainRideConfirmPanel = ({
   setRidePopupPanel,
   setConfirmRidePopupPanel,
+  ride,
 }) => {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
 
   const submitHander = async (e) => {
     e.preventDefault();
-    navigate("/captain-riding");
+    try {
+      const res = await api.get("/rides/start", {
+        params: {
+          rideId: ride._id,
+          otp: otp,
+        },
+      });
+
+      if (res.status === 200) {
+        setConfirmRidePopupPanel(false);
+        setRidePopupPanel(false);
+        //didnt use syncRide here cause navigate will cause useEffect in the rideContext anyway?
+        navigate("/captain-riding");
+      }
+    } catch (error) {
+      console.error("Error AT RIDE CONFIRM HANDLER", error);
+    }
   };
   return (
     <div>
@@ -34,7 +52,9 @@ const CaptainRideConfirmPanel = ({
             src="https://i.pinimg.com/236x/af/26/28/af26280b0ca305be47df0b799ed1b12b.jpg"
             alt=""
           />
-          <h2 className="text-lg font-medium capitalize">Milan User</h2>
+          <h2 className="text-lg font-medium capitalize">
+            {ride?.user.fullname.firstname + " " + ride?.user.fullname.lastname}
+          </h2>
         </div>
         <h5 className="text-lg font-semibold">2.2 KM</h5>
       </div>
@@ -43,21 +63,21 @@ const CaptainRideConfirmPanel = ({
           <div className="flex items-center gap-5 p-3 border-b-2">
             <i className="ri-map-pin-user-fill"></i>
             <div>
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm -mt-1 text-gray-600">pickup</p>
+              <h3 className="text-lg font-medium capitalize">{ride?.pickup}</h3>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 border-b-2">
             <i className="text-lg ri-map-pin-2-fill"></i>
             <div>
-              <h3 className="text-lg font-medium">562/11-A</h3>
-              <p className="text-sm -mt-1 text-gray-600">destination</p>
+              <h3 className="text-lg font-medium capitalize">
+                {ride?.destination}
+              </h3>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3">
             <i className="ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">₹400 </h3>
+              <h3 className="text-lg font-medium">₹{ride?.fare} </h3>
               <p className="text-sm -mt-1 text-gray-600">Cash</p>
             </div>
           </div>

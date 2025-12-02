@@ -9,12 +9,19 @@ import { createServer } from "http";
 const app = express();
 
 //middlewares
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://11q0v75m-5173.inc1.devtunnels.ms",
     credentials: true,
   })
 );
+
 app.use(express.json({ limit: "12kb" }));
 app.use(cookieParser());
 //connect to mongodb

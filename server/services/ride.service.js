@@ -75,24 +75,127 @@ export const createRideService = async (
     otp: generateOtp(6),
     fare: fare[vehicleType],
   });
-  console.log("RIDE: ", ride);
   return ride;
 };
 
-export const confirmRideService = async (rideId, captain) => {
-  if (!rideId || !captain) {
-    throw new ApiError(400, "rideId and captain are required");
+export const confirmRideService = async (rideId, captainId) => {
+  if (!rideId || !captainId) {
+    throw new ApiError(400, "rideId and captainId are required");
   }
-
-  const ride = await Ride.findOneAndUpdate(
+  await Ride.findOneAndUpdate(
     { _id: rideId },
     {
-      captain: captain._id,
+      captain: captainId,
       status: "accepted",
     }
   );
+  const ride = await Ride.findById(rideId)
+    .populate("user")
+    .populate("captain")
+    .select("+otp");
   if (!ride) {
     throw new ApiError(404, "Ride not found");
   }
   return ride;
 };
+
+export const startRideService = async (rideId, otp, captainId) => {
+  if (!rideId || !captainId || !otp) {
+    throw new ApiError(400, "rideId, captainId and otp are required");
+  }
+  const ride = await Ride.findById(rideId).select("+otp");
+
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
+  }
+  if (!ride.captain || ride.captain._id.toString() !== captainId.toString()) {
+    throw new ApiError(403, "Captain is not assigned to this ride");
+  }
+  // check if status is accepted
+  if (ride.status !== "accepted") {
+    throw new ApiError(400, "Ride cannot be started in current status");
+  }
+
+  // verify OTP
+  if (ride.otp !== otp) {
+    throw new ApiError(400, "Invalid OTP");
+  }
+
+  const finalRide = await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "ongoing",
+    }
+  )
+    .populate("user")
+    .populate("captain")
+    .select("+otp");
+  return finalRide;
+};
+export const endRideService = async (rideId, captainId) => {
+  const ride = await Ride.findById(rideId);
+
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
+  }
+
+  if (!ride.captain || ride.captain._id.toString() !== captainId.toString()) {
+    throw new ApiError(403, "Captain is not assigned to this ride");
+  }
+  // check if status is accepted
+  if (ride.status !== "ongoing") {
+    throw new ApiError(400, "Ride cannot end in current status");
+  }
+
+  const finalRide = await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "completed",
+    }
+  )
+    .populate("user")
+    .populate("captain");
+  return finalRide;
+};
+
+export const fetchCurrentRide = async (userId, userType) => {
+  if (!userId || !userType) {
+    throw new ApiError(400, "userId and userType are required");
+  }
+  const statusPriority = ["ongoing", "accepted", "pending"]; // Most → Least important
+  for (const status of statusPriority) {
+    let query;
+    if (userType === "user") {
+      query = {
+        user: userId,
+        status,
+        // Exclude cancelled/completed rides older than 1 hour
+        ...(status === "pending" && {
+          createdAt: { $gte: new Date(Date.now() - 60 * 60 * 1000) },
+        }),
+      };
+    } else {
+      query = {
+        captain: userId,
+        status: { $in: ["ongoing", "accepted"] },
+      };
+    }
+
+    const ride = await Ride.findOne(query)
+      .populate("user")
+      .populate("captain")
+      .select("+otp")
+      .sort({ createdAt: -1 }) // Most recent first
+      .lean();
+
+    if (ride) return ride;
+  }
+
+  return null; // No active ride
+};
+
+// ride.service.js

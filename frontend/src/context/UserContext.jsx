@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
         console.log("(userContext)CURRENT USER RES: ", res);
         setUser(res.data.data.user);
       } catch (error) {
-        console.error("User auth failed at userContext, error: ", error);
+        console.error("USERCONTEXT USER-AUTH FAILED:", error);
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -36,12 +36,15 @@ export const UserProvider = ({ children }) => {
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({
-    user,
-    isLoading,
-    updateUser,
-    clearUser,
-  }));
+  const value = useMemo(
+    () => ({
+      user,
+      isLoading,
+      updateUser,
+      clearUser,
+    }),
+    [user, isLoading, updateUser, clearUser]
+  );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 export const useUser = () => {

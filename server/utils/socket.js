@@ -26,7 +26,7 @@ function initializeSocket(server) {
       }
     });
 
-    socket.on("update-location-captain", async (data) => {
+    socket.on("update-captain-location", async (data) => {
       const { userId, location } = data;
 
       if (!location || !location.ltd || !location.lng) {
@@ -48,7 +48,7 @@ function initializeSocket(server) {
 }
 
 const sendMessageToSocketId = (socketId, messageObject) => {
-  console.log(`SENDING MESSAGE TO SOCKET ID: ${socketId} : `, messageObject);
+  //console.log(`SENDING MESSAGE TO SOCKET ID: ${socketId} : `, messageObject);
 
   if (io) {
     io.to(socketId).emit(messageObject.event, messageObject.data);

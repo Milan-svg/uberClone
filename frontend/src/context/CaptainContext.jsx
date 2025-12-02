@@ -25,7 +25,7 @@ export const CaptainProvider = ({ children }) => {
           setCaptain(res.data.data);
         }
       } catch (err) {
-        console.error("Captain auth failed at captainContext, error: ", err);
+        console.error("CaptainCONTEXT Captain-AUTH FAILED:", err);
         setCaptain(null);
       } finally {
         setIsLoading(false);
@@ -48,16 +48,28 @@ export const CaptainProvider = ({ children }) => {
   const clearError = useCallback(() => {
     setError(null);
   }, []);
-  const value = useMemo(() => ({
-    captain,
-    isLoading,
-    error,
-    updateCaptain,
-    clearCaptain,
-    setIsLoading,
-    setErrorState,
-    clearError,
-  }));
+  const value = useMemo(
+    () => ({
+      captain,
+      isLoading,
+      error,
+      updateCaptain,
+      clearCaptain,
+      setIsLoading,
+      setErrorState,
+      clearError,
+    }),
+    [
+      captain,
+      isLoading,
+      error,
+      updateCaptain,
+      clearCaptain,
+      setIsLoading,
+      setErrorState,
+      clearError,
+    ]
+  );
   return (
     <captainContext.Provider value={value}>{children}</captainContext.Provider>
   );
