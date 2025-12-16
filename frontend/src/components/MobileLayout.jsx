@@ -3,8 +3,8 @@ import { Outlet } from "react-router-dom";
 
 function MobileLayout() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="mobile-container">
+    <div className="app-shell">
+      <div className="mobile-shell">
         <Outlet />
       </div>
     </div>

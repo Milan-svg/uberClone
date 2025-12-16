@@ -45,11 +45,11 @@ const CaptainRideConfirmPanel = ({
       <h3 className="text-2xl font-semibold mb-5">
         Confirm this ride to Start
       </h3>
-      <div className="flex items-center justify-between p-3 border-2 border-yellow-400 rounded-lg mt-4">
+      <div className="flex items-center justify-between p-3 shadow-sm rounded-lg mt-4">
         <div className="flex items-center gap-3 ">
           <img
             className="h-12 rounded-full object-cover w-12"
-            src="https://i.pinimg.com/236x/af/26/28/af26280b0ca305be47df0b799ed1b12b.jpg"
+            src="https://plus.unsplash.com/premium_photo-1682096252599-e8536cd97d2b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt=""
           />
           <h2 className="text-lg font-medium capitalize">
@@ -93,7 +93,7 @@ const CaptainRideConfirmPanel = ({
               placeholder="Enter OTP"
             />
 
-            <button className="w-full mt-5 text-lg flex justify-center bg-green-600 text-white font-semibold p-3 rounded-lg">
+            <button className="w-full mt-5 text-lg flex justify-center bg-green-700 text-white font-semibold p-3 rounded-lg">
               Confirm
             </button>
             <button
@@ -101,7 +101,7 @@ const CaptainRideConfirmPanel = ({
                 setConfirmRidePopupPanel(false);
                 setRidePopupPanel(false);
               }}
-              className="w-full mt-2 bg-red-600 text-lg text-white font-semibold p-3 rounded-lg"
+              className="w-full mt-2 bg-red-700 text-lg text-white font-semibold p-3 rounded-lg"
             >
               Cancel
             </button>

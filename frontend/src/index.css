@@ -114,16 +114,37 @@
   }
   .mobile-container {
     max-width: 430px;
-    min-height: 100vh;
-    margin: 0 auto;
+    height: 100vh;
     background-color: white;
     position: relative;
   }
-  .auth-container {
+  .app-shell {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #f3f4f6;
+  }
+
+  .mobile-shell {
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .page {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  /* .auth-container {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1.75rem;
-  }
+  } */
 }

@@ -17,11 +17,11 @@ const RidePopup = ({
         <i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
       </h5>
       <h3 className="text-2xl font-semibold mb-5">New Ride Available!</h3>
-      <div className="flex items-center justify-between p-3 bg-yellow-400 rounded-lg mt-4">
+      <div className="flex items-center justify-between p-3  shadow-sm rounded-lg mt-4">
         <div className="flex items-center gap-3 ">
           <img
             className="h-12 rounded-full object-cover w-12"
-            src="https://i.pinimg.com/236x/af/26/28/af26280b0ca305be47df0b799ed1b12b.jpg"
+            src="https://plus.unsplash.com/premium_photo-1682096252599-e8536cd97d2b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt=""
           />
           <h2 className="text-lg font-medium capitalize">
@@ -57,7 +57,7 @@ const RidePopup = ({
         <div className="mt-5 w-full ">
           <button
             onClick={handleConfirmRide}
-            className=" bg-green-600 w-full text-white font-semibold p-2 px-10 rounded-lg"
+            className=" bg-green-700 w-full text-white font-semibold p-2 px-10 rounded-lg"
           >
             Accept
           </button>

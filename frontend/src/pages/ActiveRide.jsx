@@ -6,6 +6,12 @@ import {
   Polyline,
   Popup,
 } from "react-leaflet";
+import {
+  pickupIcon,
+  destinationIcon,
+  captainIcon,
+  userIcon,
+} from "../utils/utils";
 import L, { map } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,7 +29,6 @@ const ActiveRide = () => {
   } = useRide();
   const { socket } = useSocket();
   const [captainLocation, setCaptainLocation] = useState(null);
-  const [locationHistory, setLocationHistory] = useState([]); // For polyline path
   const [roadRoute, setRoadRoute] = useState([]);
   const [captainToPickupRoute, setCaptainToPickupRoute] = useState([]);
 
@@ -65,12 +70,11 @@ const ActiveRide = () => {
 
       const newLoc = { ltd: Number(location.ltd), lng: Number(location.lng) };
       setCaptainLocation(newLoc);
-      setLocationHistory((prev) => [...prev.slice(-50), newLoc]); // Keep last 50 points
       if (hasPickup) {
         const route = await getRoute(newLoc, ride.pickupCoordinates);
         setCaptainToPickupRoute(route);
       }
-      // Center map smoothly on captain for better UX
+      // center map on captain
       const map = mapRef.current;
       if (map) {
         map.setView([newLoc.ltd, newLoc.lng], 16, { animate: true });
@@ -83,6 +87,7 @@ const ActiveRide = () => {
       socket.off("captain-location-update", handleLocationUpdate);
     };
   }, [socket, ride?.captain?._id]);
+
   const fallbackCenter = [
     ride?.pickupCoordinates?.ltd ?? 28.6,
     ride?.pickupCoordinates?.lng ?? 77.2,
@@ -108,15 +113,34 @@ const ActiveRide = () => {
     ]);
   };
 
+  const emojiIcon = (emoji) =>
+    L.divIcon({
+      html: `<div style="font-size:24px">${emoji}</div>`,
+      className: "",
+    });
+
   return (
-    <div className="h-screen">
+    <div className="page">
+      <div className="absolute w-full p-6 top-0 flex items-center justify-between z-10 ">
+        <img
+          className="w-16"
+          src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+          alt=""
+        />
+        <Link
+          to="/captain-home"
+          className=" h-10 w-10 bg-white flex items-center justify-center rounded-full"
+        >
+          <i className="text-lg font-medium ri-logout-box-r-line"></i>
+        </Link>
+      </div>
       <Link
         to="/home"
-        className="fixed right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full"
+        className="absolute z-[1000] right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full"
       >
         <i className="text-lg font-medium ri-home-5-line"></i>
       </Link>
-      <div className="h-1/2">
+      <div className="absolute inset-0 z-0">
         <MapContainer
           center={fallbackCenter}
           zoom={15}
@@ -124,7 +148,7 @@ const ActiveRide = () => {
           scrollWheelZoom={true}
           style={{ height: "100%", width: "100%" }}
         >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
           {/* 1. Pickup point (start) */}
           {hasPickup && (
@@ -133,26 +157,19 @@ const ActiveRide = () => {
                 ride.pickupCoordinates.ltd,
                 ride.pickupCoordinates.lng,
               ]}
-              //icon={pickupIcon}
+              icon={pickupIcon}
             >
-              <Popup>Pickup Location</Popup>
+              <Popup>Pickup</Popup>
             </Marker>
           )}
-
-          {/* 2. User live location */}
-          {/* {
-            <Marker position={[28.5, 77.3]}>
-              <Popup>You are here</Popup>
-            </Marker>
-          } */}
 
           {/*Captain live location */}
           {captainLocation && (
             <Marker
               position={[captainLocation.ltd, captainLocation.lng]}
-              //icon={captainIcon}
+              icon={captainIcon}
             >
-              <Popup>Captain arriving</Popup>
+              <Popup>Captain</Popup>
             </Marker>
           )}
 
@@ -163,57 +180,50 @@ const ActiveRide = () => {
                 ride.destinationCoordinates.ltd,
                 ride.destinationCoordinates.lng,
               ]}
-              // icon={destIcon}
+              icon={destinationIcon}
             >
-              <Popup>🏁 Destination</Popup>
+              <Popup>Destination</Popup>
             </Marker>
           )}
 
-          {/*Captain's path history */}
-          {locationHistory.length > 1 && (
-            <Polyline
-              positions={locationHistory.map((loc) => [loc.ltd, loc.lng])}
-              color="#1E90FF"
-              weight={4}
-              dashArray="10, 10"
-            />
-          )}
           {/* captain live location to pickup location polyline*/}
-          {captainToPickupRoute.length > 0 && (
+          {/* {captainToPickupRoute.length > 0 && (
             <Polyline
               positions={captainToPickupRoute}
-              color="#FFF"
-              weight={5}
+              color="#000000"
+              weight={3}
+              dashArray="5, 5"
+              opacity={0.7}
             />
-          )}
+          )} */}
 
           {/* pickup to destination route */}
           {ride?.pickupCoordinates && ride?.destinationCoordinates && (
             <Polyline
               positions={roadRoute}
-              color="#FF6B6B"
-              weight={3}
-              dashArray="5, 5"
-              opacity={0.7}
+              lineCap="round"
+              lineJoin="round"
+              color="#008000"
+              weight={6}
             />
           )}
         </MapContainer>
       </div>
-      <div className="h-1/2 p-4">
+      <div className="absolute bottom-0 w-full bg-white h-[33%] z-10 p-4 my-4 shadow-2xl rounded-xl">
         <div className="flex items-center justify-between">
           <img
-            className="h-12"
+            className="h-24"
             src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
             alt=""
           />
-          <div className="text-right">
-            <h2 className="text-lg font-medium capitalize">
+          <div className="text-right space-y-2">
+            <h2 className="text-xl font-bold capitalize">
               {ride?.captain.fullname.firstname}
             </h2>
             <h4 className="text-xl font-semibold -mt-1 -mb-1">
               {ride?.captain.vehicle.plate}
             </h4>
-            <p className="text-sm text-gray-600">Maruti Suzuki Alto</p>
+            <p className="text-md text-gray-600">Maruti Suzuki Alto</p>
           </div>
         </div>
 
@@ -234,8 +244,8 @@ const ActiveRide = () => {
             </div>
           </div>
         </div>
-        <button className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg">
-          Make a Payment
+        <button className="w-full mt-5 bg-green-700 text-white font-semibold p-2 rounded-lg">
+          Make Payment
         </button>
       </div>
     </div>

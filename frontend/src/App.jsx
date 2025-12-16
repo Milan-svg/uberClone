@@ -13,8 +13,6 @@ import ActiveRide from "./pages/ActiveRide";
 import CaptainActiveRide from "./pages/CaptainActiveRide";
 import TestSocket from "./pages/SocketTest";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CapLocationTest from "./pages/CapLocationTest";
-import UserLocationTest from "./pages/UserLocationTest";
 
 function App() {
   return (
@@ -32,8 +30,6 @@ function App() {
             <Route path="/riding" element={<ActiveRide />} />
             <Route path="/captain-home" element={<CaptainHome />} />
             <Route path="/captain-riding" element={<CaptainActiveRide />} />
-            <Route path="/captain-loc" element={<CapLocationTest />} />
-            <Route path="/user-loc" element={<UserLocationTest />} />
           </Route>
         </Route>
       </Routes>

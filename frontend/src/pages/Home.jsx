@@ -1,5 +1,13 @@
 import React, { act, useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  Popup,
+} from "react-leaflet";
+import { userIcon, captainIcon } from "../utils/utils.js";
 import gsap from "gsap";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -40,14 +48,10 @@ const Home = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { socket } = useSocket();
-
-  const {
-    currentRide: ride,
-    rideStatus,
-    isSyncing,
-    userType,
-    syncRideState,
-  } = useRide();
+  // will add live user location later, using localstate for now
+  const [userLocation, setUserLocation] = useState(null);
+  const mapRef = useRef();
+  const { currentRide: ride, syncRideState } = useRide();
   //console.log(user);
   useEffect(() => {
     socket.emit("join", {
@@ -63,6 +67,27 @@ const Home = () => {
       socket.off("ride-started", socketStartRide);
     };
   }, [user, socket]);
+
+  useEffect(() => {
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const locationData = {
+            ltd: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setUserLocation(locationData);
+          const map = mapRef.current;
+          if (map) {
+            map.setView([locationData.ltd, locationData.lng], 16, {
+              animate: true,
+            });
+          }
+        });
+      }
+    };
+    updateLocation();
+  }, []);
 
   const handlePickupChang = async (e) => {
     setPickup(e.target.value);
@@ -180,7 +205,7 @@ const Home = () => {
   }, []);
   const handleLogout = async () => {
     try {
-      console.log("logout btn pressed");
+      //console.log("logout btn pressed");
       await api.get("/users/logout");
       navigate("/");
     } catch (error) {
@@ -235,9 +260,9 @@ const Home = () => {
   panelAnimate(waitingForCaptainRef, isWaitingForCaptain);
 
   return (
-    <div className="h-screen relative overflow-hidden">
+    <div className="page">
       <img
-        className="w-16 absolute left-5 top-5"
+        className="w-16 absolute left-5 top-5 z-10"
         src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
         alt=""
       />
@@ -248,17 +273,30 @@ const Home = () => {
         <i className="ri-logout-box-line text-3xl"></i>
       </button>
 
-      <div className="h-full w-full">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="Map"
-        />
+      <div className="absolute inset-0 z-0">
+        <MapContainer
+          zoom={15}
+          ref={mapRef}
+          scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+
+          {/* user live location */}
+          {userLocation && (
+            <Marker
+              position={[userLocation.ltd, userLocation.lng]}
+              icon={userIcon}
+            >
+              <Popup>You</Popup>
+            </Marker>
+          )}
+        </MapContainer>
       </div>
 
       {/* Location search panels */}
-      <div className=" flex flex-col justify-end h-screen absolute top-0 w-full">
-        <div className="h-[30%] p-6 bg-white relative">
+      <div className="absolute inset-0 flex flex-col justify-end z-10 pointer-events-none">
+        <div className="h-[30%] p-6 bg-white relative pointer-events-auto">
           <h5
             ref={panelCloseRef}
             onClick={() => {
@@ -287,7 +325,7 @@ const Home = () => {
               onChange={handlePickupChang}
               className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full"
               type="text"
-              placeholder="Add a pick-up location"
+              placeholder="Enter pick-up location"
             />
             <input
               onClick={() => {
@@ -310,7 +348,10 @@ const Home = () => {
             Find Trip
           </button>
         </div>
-        <div ref={panelRef} className="bg-white h-0">
+        <div
+          ref={panelRef}
+          className="bg-white h-0 pointer-events-auto overflow-hidden"
+        >
           <LocationSearchPanel
             suggestions={
               activeField === "pickup"

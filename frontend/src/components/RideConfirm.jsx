@@ -47,7 +47,7 @@ const RideConfirm = ({
         </div>
       </div>
       <button
-        className="w-full mt-5 bg-green-600 text-white font-semibold p-2 rounded-lg"
+        className="w-full mt-5 bg-green-700 text-white font-semibold p-2 rounded-lg"
         onClick={() => {
           setIsLookingForCaptain(true);
           setRideConfirmPanelOpen(false);
