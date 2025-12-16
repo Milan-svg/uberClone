@@ -13,15 +13,3 @@ Uber-style ride booking app with real-time user ↔ captain updates, OTP-based r
 ## Tech Stack
 
 React (Vite), Node.js, Express, MongoDB (Mongoose), Socket.IO
-
-### Screenshots
-
-![User home](screenshots/userHome.png)
-![Captain home](screenshots/captainHome.png)
-![User location Search](screenshots/locationSearch.png)
-![Searching for Captain](screenshots/searchingForCaptain.png)
-![User Confirm Ride](screenshots/confirmRide.png)
-![Captain Ride Popup](screenshots/newRidePopup.png)
-![Confirm Ride Screen](screenshots/confirmRideScreen.png)
-![Ongoing Ride Screen](screenshots/rideOngoing.png)
-![Finish Ride Screen](screenshots/finishRide.png)
