@@ -32,41 +32,41 @@ const CaptainHome = () => {
     //emit join event on mount
     socket.emit("join", { userId: captain._id, userType: "captain" });
     //location updte function
-    const updateLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          socket.emit("update-captain-location", {
-            userId: captain._id,
-            location: {
-              ltd: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-          });
-          console.log("LOCATION DATA TO SEND", {
-            userId: captain._id,
-            location: {
-              ltd: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-          });
-        });
-      }
-    };
+    // const updateLocation = () => {
+    //   if (navigator.geolocation) {
+    //     navigator.geolocation.getCurrentPosition((position) => {
+    //       socket.emit("update-captain-location", {
+    //         userId: captain._id,
+    //         location: {
+    //           ltd: position.coords.latitude,
+    //           lng: position.coords.longitude,
+    //         },
+    //       });
+    //       console.log("LOCATION DATA TO SEND", {
+    //         userId: captain._id,
+    //         location: {
+    //           ltd: position.coords.latitude,
+    //           lng: position.coords.longitude,
+    //         },
+    //       });
+    //     });
+    //   }
+    // };
 
-    updateLocation();
-    const IntervalId = setInterval(updateLocation, 2000000);
+    // updateLocation();
+    // const IntervalId = setInterval(updateLocation, 2000000);
 
     const handleNewRide = async (data) => {
-      console.log("NEW RIDE:", data);
+      //console.log("NEW RIDE:", data);
       setPendingRideFromSocket(data);
       setRidePopupPanel(true);
     };
     socket.on("new-ride", handleNewRide);
     return () => {
       socket.off("new-ride", handleNewRide);
-      clearInterval(IntervalId);
+      //clearInterval(IntervalId);
     };
-  }, [captain]);
+  }, [captain, socket]);
 
   useEffect(() => {
     if (ride && ["accepted", "ongoing"].includes(ride.status)) {

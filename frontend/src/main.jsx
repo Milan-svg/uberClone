@@ -9,16 +9,16 @@ import SocketProvider from "./context/SocketContext.jsx";
 import { RideProvider } from "./context/RideContext.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <SocketProvider>
-      <CaptainProvider>
-        <UserProvider>
+    <CaptainProvider>
+      <UserProvider>
+        <SocketProvider>
           <RideProvider>
             <BrowserRouter>
               <App />
             </BrowserRouter>
           </RideProvider>
-        </UserProvider>
-      </CaptainProvider>
-    </SocketProvider>
+        </SocketProvider>
+      </UserProvider>
+    </CaptainProvider>
   </StrictMode>
 );

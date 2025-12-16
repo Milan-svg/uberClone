@@ -16,8 +16,8 @@ const ProtectedRoute = () => {
       </div>
     );
   }
-  const userRoutes = ["/home", "/riding"];
-  const captainRoutes = ["/captain-home", "/captain-riding"];
+  const userRoutes = ["/home", "/riding", "/user-loc"];
+  const captainRoutes = ["/captain-home", "/captain-riding", "/captain-loc"];
   const needsUser = userRoutes.some((route) =>
     location.pathname.startsWith(route)
   );

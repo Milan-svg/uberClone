@@ -40,7 +40,6 @@ const Home = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { socket } = useSocket();
-  const [createdRide, setCreatedRide] = useState(null);
 
   const {
     currentRide: ride,
@@ -153,8 +152,7 @@ const Home = () => {
       });
       if (res.status === 200) {
         await syncRideState();
-        console.log("CREATE RIDE RESPONSE: ", res);
-        setCreatedRide(res.data.data);
+        //console.log("CREATE RIDE RESPONSE: ", res);
       }
     } catch (error) {
       console.error("CREATE RIDE ERROR: ", error);
@@ -170,14 +168,11 @@ const Home = () => {
         setRideConfirmPanelOpen(false);
         setIsLookingForCaptain(false);
         setIsWaitingForCaptain(false);
-      }
-      if (ride && ["pending"].includes(ride.status)) {
+      } else if (ride.status === "pending") {
         setIsLookingForCaptain(true);
-      }
-      if (ride && ["accepted"].includes(ride.status)) {
+      } else if (ride.status === "accepted") {
         setIsWaitingForCaptain(true);
-      }
-      if (ride && ["ongoing"].includes(ride.status)) {
+      } else if (ride.status === "ongoing") {
         navigate("/riding");
       }
     };
@@ -363,7 +358,7 @@ const Home = () => {
         className="absolute z-10 bottom-0 bg-white w-full p-6"
       >
         <LookingForCaptain
-          createdRide={createdRide}
+          ride={ride}
           setIsLookingForCaptain={setIsLookingForCaptain}
         />
       </div>

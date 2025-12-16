@@ -35,10 +35,10 @@ export const RideProvider = ({ children }) => {
         try {
           const res = await api.delete("rides/cleanup");
           if (res.status === 200) {
-            console.log(
-              "STALE RIDES CLEANUP SUCCESS at rideCotext: ",
-              res.data
-            );
+            // console.log(
+            //   "STALE RIDES CLEANUP SUCCESS at rideCotext: ",
+            //   res.data
+            // );
           }
         } catch (error) {
           console.error("STALE RIDES CLEANUP FAILED at rideCotext", error);
@@ -46,7 +46,7 @@ export const RideProvider = ({ children }) => {
       }
       const res = await api.get("/rides/current");
 
-      console.log("CuRRENT RIDE FETCH: ", res);
+      //console.log("CuRRENT RIDE FETCH: ", res);
 
       if (res.status === 200) {
         const ride = res.data?.data || null;
@@ -65,7 +65,7 @@ export const RideProvider = ({ children }) => {
 
   useEffect(() => {
     if (userType) {
-      console.log("SYNCING RIDE STATE at rideContext");
+      //console.log("SYNCING RIDE STATE at rideContext");
       syncRideState(true);
     }
   }, [userType, syncRideState]);

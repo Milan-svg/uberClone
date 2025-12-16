@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
       try {
         setIsLoading(true);
         const res = await api.get("/users/current-user");
-        console.log("(userContext)CURRENT USER RES: ", res);
+        //console.log("(userContext)CURRENT USER RES: ", res);
         setUser(res.data.data.user);
       } catch (error) {
         console.error("USERCONTEXT USER-AUTH FAILED:", error);

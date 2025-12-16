@@ -60,7 +60,9 @@ export const createRideService = async (
   user,
   pickup,
   destination,
-  vehicleType
+  vehicleType,
+  pickupCoordinates,
+  destinationCoordinates
 ) => {
   if (!user || !pickup || !destination || !vehicleType) {
     throw new ApiError(400, "All fields are required");
@@ -69,9 +71,11 @@ export const createRideService = async (
   const fare = await calculateFare(pickup, destination);
 
   const ride = Ride.create({
-    user,
-    pickup,
-    destination,
+    user: user,
+    pickup: pickup,
+    destination: destination,
+    pickupCoordinates: pickupCoordinates,
+    destinationCoordinates: destinationCoordinates,
     otp: generateOtp(6),
     fare: fare[vehicleType],
   });

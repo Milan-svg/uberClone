@@ -29,20 +29,23 @@ const createRide = asyncHandler(async (req, res) => {
   const { pickup, destination, vehicleType } = req?.body;
   const userId = req?.user._id;
   //console.log("USERId:", userId);
+  const pickupCoordinates = await fetchCoordinates(pickup);
+  const destinationCoordinates = await fetchCoordinates(destination);
   const ride = await createRideService(
     userId,
     pickup,
     destination,
-    vehicleType
+    vehicleType,
+    pickupCoordinates,
+    destinationCoordinates
   );
   //console.log("RIDE: ", ride);
   // get coordinates from pickup
   //get nearby captains using the pickup ltd and lng and the getCaptainsInRadius service
-  const coordinates = await fetchCoordinates(pickup);
   //console.log("PICKUP COORDS: ", coordinates);
   const captainsInRadius = await fetchCaptainsInRadius(
-    coordinates.ltd,
-    coordinates.lng,
+    pickupCoordinates.ltd,
+    pickupCoordinates.lng,
     2
   );
   ride.otp = "";

@@ -1,14 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 import RideComplete from "../components/RideComplete";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useSocket } from "../context/SocketContext";
 import { useRide } from "../context/RideContext";
+import { useCaptain } from "../context/CaptainContext";
 
 const CaptainActiveRide = () => {
   const [completeRidePanel, setCompleteRidePanel] = useState(false);
   const completeRidePanelRef = useRef(null);
+  const { captain } = useCaptain();
+  const { socket } = useSocket();
   const {
     currentRide: ride,
     rideStatus,
@@ -16,7 +19,37 @@ const CaptainActiveRide = () => {
     userType,
     syncRideState,
   } = useRide();
+  useEffect(() => {
+    if (!socket || !captain) return;
+    //location updte function
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          socket.emit("update-captain-location", {
+            userId: captain._id,
+            location: {
+              ltd: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+          console.log("LOCATION DATA TO SEND", {
+            userId: captain._id,
+            location: {
+              ltd: position.coords.latitude,
+              lng: position.coords.longitude,
+            },
+          });
+        });
+      }
+    };
 
+    updateLocation();
+    const IntervalId = setInterval(updateLocation, 20000);
+
+    return () => {
+      clearInterval(IntervalId);
+    };
+  }, [captain, socket]);
   useGSAP(
     function () {
       gsap.to(completeRidePanelRef.current, {
