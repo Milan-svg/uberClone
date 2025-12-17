@@ -13,3 +13,6 @@ Uber-style ride booking app with real-time user ↔ captain updates, OTP-based r
 ## Tech Stack
 
 React (Vite), Node.js, Express, MongoDB (Mongoose), Socket.IO
+
+Heres a Video Demo for the Project:
+https://youtu.be/LSgdxrukkYA
