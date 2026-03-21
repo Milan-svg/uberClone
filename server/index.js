@@ -17,10 +17,10 @@ const app = express();
 // );
 app.use(
   cors({
-    origin: "https://11q0v75m-5173.inc1.devtunnels.ms",
+    origin: "https://rv3wqvn5-5173.inc1.devtunnels.ms",
 
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json({ limit: "12kb" }));
@@ -33,8 +33,8 @@ mongoose
   .connect(`${process.env.MONGODB_URL}/milan1`)
   .then((connectionInstance) =>
     console.log(
-      `MONGODB connected, DB HOST: ${connectionInstance.connection.host}`
-    )
+      `MONGODB connected, DB HOST: ${connectionInstance.connection.host}`,
+    ),
   )
   .catch((err) => {
     console.log("MONGODB CONNECTION ERROR:", err);

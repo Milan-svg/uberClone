@@ -16,7 +16,7 @@ const url = import.meta.env.VITE_BASE_URL;
 //   timeout: 20000,
 //   transports: ["websocket", "polling"],
 // });
-const socket = io("https://11q0v75m-8000.inc1.devtunnels.ms", {
+const socket = io("https://rv3wqvn5-8000.inc1.devtunnels.ms", {
   autoConnect: true,
   reconnection: true,
   reconnectionAttempts: 5,

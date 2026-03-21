@@ -69,6 +69,7 @@ const Home = () => {
   }, [user, socket]);
 
   useEffect(() => {
+    // will add live user location later, using localstate for now
     const updateLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -104,7 +105,7 @@ const Home = () => {
           params: { input: e.target.value },
         });
         setPickupSuggestions(res.data.data);
-        //console.log(res);
+        console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -249,7 +250,7 @@ const Home = () => {
         });
       }
     },
-    [panelOpen]
+    [panelOpen],
   );
   panelAnimate(vehiclePanelRef, vehiclePanelOpen);
 

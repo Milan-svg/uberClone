@@ -78,7 +78,7 @@ export const RideProvider = ({ children }) => {
       userType,
       syncRideState,
     }),
-    [currentRide, rideStatus, isSyncing, userType, syncRideState]
+    [currentRide, rideStatus, isSyncing, userType, syncRideState],
   );
   return <RideContext.Provider value={value}>{children}</RideContext.Provider>;
 };
@@ -87,6 +87,7 @@ export const useRide = () => {
   const context = useContext(RideContext);
   if (!context) {
     console.error("RIDE CONTEXT MUST BE USED WITH useRide");
+    throw new Error("RIDE CONTEXT MUST BE USED WITH useRide");
   }
   return context;
 };

@@ -55,7 +55,6 @@ export const CaptainProvider = ({ children }) => {
       error,
       updateCaptain,
       clearCaptain,
-      setIsLoading,
       setErrorState,
       clearError,
     }),
@@ -65,10 +64,9 @@ export const CaptainProvider = ({ children }) => {
       error,
       updateCaptain,
       clearCaptain,
-      setIsLoading,
       setErrorState,
       clearError,
-    ]
+    ],
   );
   return (
     <captainContext.Provider value={value}>{children}</captainContext.Provider>

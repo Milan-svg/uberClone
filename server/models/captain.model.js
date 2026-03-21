@@ -86,8 +86,12 @@ captainSchema.methods.comparePassword = async function (inputPassword) {
 };
 
 captainSchema.methods.generateAccessToken = async function () {
-  return jwt.sign({ _id: this._id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "6h",
-  });
+  return jwt.sign(
+    { _id: this._id, role: "captain" },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: "6h",
+    },
+  );
 };
 export const Captain = mongoose.model("Captain", captainSchema);

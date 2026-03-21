@@ -11,7 +11,7 @@ const registerCaptain = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "Validation Error")
+        new ApiResponse(400, { errors: errors.array() }, "Validation Error"),
       );
   }
   const { fullname, email, password, vehicle } = req.body;
@@ -36,8 +36,8 @@ const registerCaptain = asyncHandler(async (req, res) => {
       new ApiResponse(
         201,
         { captain: createdCaptain, accessToken: accessToken },
-        "Captain created successfully"
-      )
+        "Captain created successfully",
+      ),
     );
 });
 
@@ -47,7 +47,7 @@ const loginCaptain = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "Validation Error")
+        new ApiResponse(400, { errors: errors.array() }, "Validation Error"),
       );
   }
   const { email, password } = req.body;
@@ -71,8 +71,8 @@ const loginCaptain = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { captain: captain, accessToken: accessToken },
-        "Captain logged in successfully"
-      )
+        "Captain logged in successfully",
+      ),
     );
 });
 const logoutCaptain = asyncHandler(async (req, res) => {
@@ -88,12 +88,11 @@ const logoutCaptain = asyncHandler(async (req, res) => {
 
 const getCurrentCaptain = asyncHandler(async (req, res) => {
   const fetchedCaptain = req?.user;
-  const isCaptain = await Captain.findById(fetchedCaptain._id);
-  if (!isCaptain) {
-    throw new ApiError(404, "Captain not found");
+  if (req.role !== "captain") {
+    throw new ApiError(403, "Access denied: captain only");
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, isCaptain, "captain fetched successfully"));
+    .json(new ApiResponse(200, fetchedCaptain, "captain fetched successfully"));
 });
 export { registerCaptain, loginCaptain, logoutCaptain, getCurrentCaptain };

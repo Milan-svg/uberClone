@@ -32,7 +32,7 @@ export const UserProvider = ({ children }) => {
   const updateUser = useCallback((user) => {
     setUser(user);
   }, []);
-  const clearUser = useCallback((user) => {
+  const clearUser = useCallback(() => {
     setUser(null);
   }, []);
 
@@ -43,7 +43,7 @@ export const UserProvider = ({ children }) => {
       updateUser,
       clearUser,
     }),
-    [user, isLoading, updateUser, clearUser]
+    [user, isLoading, updateUser, clearUser],
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

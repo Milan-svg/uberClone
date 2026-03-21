@@ -13,7 +13,7 @@ const getCoordinates = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation errors")
+        new ApiResponse(400, { errors: errors.array() }, "validation errors"),
       );
   }
   const { address } = req.query;
@@ -22,7 +22,7 @@ const getCoordinates = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(
-      new ApiResponse(200, coordinates, "Coordinates fetched successfully")
+      new ApiResponse(200, coordinates, "Coordinates fetched successfully"),
     );
 });
 
@@ -32,7 +32,7 @@ const getDistanceTime = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation errors")
+        new ApiResponse(400, { errors: errors.array() }, "validation errors"),
       );
   }
   const { origin, destination } = req.query;
@@ -43,8 +43,8 @@ const getDistanceTime = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         distanceTime,
-        "Distance and Time fetched successfully"
-      )
+        "Distance and Time fetched successfully",
+      ),
     );
 });
 
@@ -54,10 +54,11 @@ const getAutoCompleteSuggestions = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation errors")
+        new ApiResponse(400, { errors: errors.array() }, "validation errors"),
       );
   }
   const { input } = req.query;
+  //console.log("QUERY PARAMS:", req.query);
   const distanceTime = await fetchAutoCompleteSuggestions(input);
   return res
     .status(200)
@@ -65,8 +66,8 @@ const getAutoCompleteSuggestions = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         distanceTime,
-        "Distance and Time fetched successfully"
-      )
+        "Distance and Time fetched successfully",
+      ),
     );
 });
 export { getCoordinates, getDistanceTime, getAutoCompleteSuggestions };

@@ -8,7 +8,7 @@ export const fetchCoordinates = async (address) => {
   }
   const apiKey = process.env.GOOGLE_MAPS_API;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-    address
+    address,
   )}&key=${apiKey}`;
   const response = await axios.get(url);
   //console.log(response);
@@ -21,7 +21,7 @@ export const fetchCoordinates = async (address) => {
   } else {
     throw new ApiError(
       400,
-      "Unable to fetch coordinates for the given address"
+      "Unable to fetch coordinates for the given address",
     );
   }
 };
@@ -33,7 +33,7 @@ export const fetchDistanceTime = async (origin, destination) => {
   const apiKey = process.env.GOOGLE_MAPS_API;
 
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(
-    origin
+    origin,
   )}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
 
   const response = await axios.get(url);
@@ -44,7 +44,10 @@ export const fetchDistanceTime = async (origin, destination) => {
 
     return response.data.rows[0].elements[0];
   } else {
-    throw new ApiError(400, "Unable to fetch distance and time");
+    throw new ApiError(
+      400,
+      response.data.error_message || "Unable to fetch distance and time",
+    );
   }
 };
 
@@ -54,7 +57,7 @@ export const fetchAutoCompleteSuggestions = async (input) => {
   }
   const apiKey = process.env.GOOGLE_MAPS_API;
   const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-    input
+    input,
   )}&key=${apiKey}`;
 
   const response = await axios.get(url);
@@ -63,7 +66,10 @@ export const fetchAutoCompleteSuggestions = async (input) => {
       .map((prediction) => prediction.description)
       .filter((value) => value);
   } else {
-    throw new ApiError(400, "Unable to fetch suggestions");
+    throw new ApiError(
+      400,
+      response.data.error_message || "Unable to fetch autocomplete suggestions",
+    );
   }
 };
 

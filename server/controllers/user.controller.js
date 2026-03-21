@@ -12,7 +12,7 @@ const registerUser = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
 
@@ -36,8 +36,8 @@ const registerUser = asyncHandler(async (req, res) => {
       new ApiResponse(
         201,
         { user: createdUser, accessToken: accessToken },
-        "user created successfully"
-      )
+        "user created successfully",
+      ),
     );
 });
 
@@ -47,7 +47,7 @@ const loginUser = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
   const { email, password } = req.body;
@@ -69,8 +69,8 @@ const loginUser = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { user: fetchedUser, accessToken: accessToken },
-        "Login Successful"
-      )
+        "Login Successful",
+      ),
     );
 });
 
@@ -105,11 +105,16 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   //console.log("REQ: ", req); caused a headache lol
+
   const fetchedUser = req.user;
+  console.log("userRole: ", req.role);
+  if (req.role !== "user") {
+    throw new ApiError(403, "Access denied, users only");
+  }
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { user: fetchedUser }, "user fetched successfuly")
+      new ApiResponse(200, { user: fetchedUser }, "user fetched successfuly"),
     );
 });
 export { registerUser, loginUser, logoutUser, getCurrentUser };
