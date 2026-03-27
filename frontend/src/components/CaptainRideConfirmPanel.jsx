@@ -8,6 +8,7 @@ const CaptainRideConfirmPanel = ({
   setRidePopupPanel,
   setConfirmRidePopupPanel,
   ride,
+  handleCancelRide,
 }) => {
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const CaptainRideConfirmPanel = ({
       console.error("Error AT RIDE CONFIRM HANDLER", error);
     }
   };
+
   return (
     <div>
       <h5
@@ -45,10 +47,10 @@ const CaptainRideConfirmPanel = ({
       <h3 className="text-2xl font-semibold mb-5">
         Confirm this ride to Start
       </h3>
-      <div className="flex items-center justify-between p-3 shadow-sm rounded-lg mt-4">
+      <div className="flex items-center justify-between p-3 shadow-md bg-gray-100 rounded-lg mt-4">
         <div className="flex items-center gap-3 ">
           <img
-            className="h-12 rounded-full object-cover w-12"
+            className="h-12 rounded-full object-cover w-12 shadow-xl"
             src="https://plus.unsplash.com/premium_photo-1682096252599-e8536cd97d2b?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt=""
           />
@@ -97,11 +99,9 @@ const CaptainRideConfirmPanel = ({
               Confirm
             </button>
             <button
-              onClick={() => {
-                setConfirmRidePopupPanel(false);
-                setRidePopupPanel(false);
-              }}
-              className="w-full mt-2 bg-red-700 text-lg text-white font-semibold p-3 rounded-lg"
+              type="button"
+              onClick={handleCancelRide}
+              className="w-full mt-2 bg-black text-lg text-white font-semibold p-3 rounded-lg"
             >
               Cancel
             </button>

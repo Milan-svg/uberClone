@@ -25,6 +25,32 @@ export const fetchCoordinates = async (address) => {
     );
   }
 };
+// export const fetchDistanceTime = async (origin, destination) => {
+//   if (!origin || !destination) {
+//     throw new ApiError(404, "Origin and destination are required");
+//   }
+
+//   const apiKey = process.env.GOOGLE_MAPS_API;
+
+//   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(
+//     origin,
+//   )}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
+
+//   const response = await axios.get(url);
+//   if (response.data.status === "OK") {
+//     if (response.data.rows[0].elements[0].status === "ZERO_RESULTS") {
+//       throw new ApiError(404, "No routes found");
+//     }
+
+//     return response.data.rows[0].elements[0];
+//   } else {
+//     throw new ApiError(
+//       400,
+//       response.data.error_message || "Unable to fetch distance and time",
+//     );
+//   }
+// };
+
 export const fetchDistanceTime = async (origin, destination) => {
   if (!origin || !destination) {
     throw new ApiError(404, "Origin and destination are required");
@@ -32,21 +58,55 @@ export const fetchDistanceTime = async (origin, destination) => {
 
   const apiKey = process.env.GOOGLE_MAPS_API;
 
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(
-    origin,
-  )}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
+  try {
+    const response = await axios.post(
+      "https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix",
+      {
+        origins: [
+          {
+            waypoint: { address: origin },
+          },
+        ],
+        destinations: [
+          {
+            waypoint: { address: destination },
+          },
+        ],
+        travelMode: "DRIVE",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask":
+            "originIndex,destinationIndex,distanceMeters,duration,status",
+        },
+      },
+    );
 
-  const response = await axios.get(url);
-  if (response.data.status === "OK") {
-    if (response.data.rows[0].elements[0].status === "ZERO_RESULTS") {
+    console.log("Distance Matrix API Response:", response);
+
+    const element = response.data[0];
+
+    if (!element || element.distanceMeters == null) {
       throw new ApiError(404, "No routes found");
     }
+    const durationSeconds = parseInt(element.duration, 10);
 
-    return response.data.rows[0].elements[0];
-  } else {
+    return {
+      distance: {
+        value: element.distanceMeters,
+        text: `${(element.distanceMeters / 1000).toFixed(1)} km`,
+      },
+      duration: {
+        value: durationSeconds,
+        text: `${Math.round(durationSeconds / 60)} mins`,
+      },
+    };
+  } catch (err) {
     throw new ApiError(
       400,
-      response.data.error_message || "Unable to fetch distance and time",
+      err.response?.data?.error?.message || "Unable to fetch distance and time",
     );
   }
 };

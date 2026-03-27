@@ -64,7 +64,7 @@ const CaptainHome = () => {
     };
 
     updateLocation();
-    const IntervalId = setInterval(updateLocation, 2000000);
+    const IntervalId = setInterval(updateLocation, 20000);
 
     const handleNewRide = async (data) => {
       //console.log("NEW RIDE:", data);
@@ -100,7 +100,7 @@ const CaptainHome = () => {
         duration: 0.5,
       });
     },
-    [ridePopupPanel]
+    [ridePopupPanel],
   );
   useGSAP(
     function () {
@@ -112,7 +112,7 @@ const CaptainHome = () => {
         duration: 0.5,
       });
     },
-    [confirmRidePopupPanel]
+    [confirmRidePopupPanel],
   );
   const handleLogout = async () => {
     try {
@@ -138,6 +138,20 @@ const CaptainHome = () => {
       }
     } catch (error) {
       console.error("ERROR AT handleConfirmRide", error);
+    }
+  };
+
+  const handleCancelRide = async () => {
+    try {
+      const res = await api.post("/rides/cancel", {
+        rideId: ride._id,
+      });
+      if (res.status === 200) {
+        console.log("RIDE CANCELLED");
+        await syncRideState();
+      }
+    } catch (error) {
+      console.error("ERROR AT handleCancelRide", error);
     }
   };
 
@@ -176,12 +190,12 @@ const CaptainHome = () => {
           )}
         </MapContainer>
       </div>
-      <div className="absolute bottom-0 w-full bg-white h-[27%] z-10 p-4 shadow-3xl rounded-xl">
+      <div className="absolute bottom-0 w-full z-10 px-3 pb-3 bg-white shadow-2xl rounded-t-3xl p-2 pt-4">
         <CaptainDetails captain={captain} />
       </div>
       <div
         ref={ridePopupPanelRef}
-        className="absolute w-full z-50 bottom-0 translate-y-full bg-white px-3 py-10 pt-12"
+        className="absolute w-full z-50 bottom-0 translate-y-full bg-white px-3 py-10 pt-12 shadow-3xl rounded-xl"
       >
         <RidePopup
           setConfirmRidePopupPanel={setConfirmRidePopupPanel}
@@ -192,12 +206,13 @@ const CaptainHome = () => {
       </div>
       <div
         ref={confirmRidePopupPanelRef}
-        className="absolute w-full h-screen z-50 bottom-0 translate-y-full bg-white px-3 py-10 pt-12"
+        className="absolute w-full h-screen z-50 bottom-0 translate-y-full px-3 py-10 pt-12 bg-white  shadow-3xl rounded-xl"
       >
         <CaptainRideConfirmPanel
           setConfirmRidePopupPanel={setConfirmRidePopupPanel}
           setRidePopupPanel={setRidePopupPanel}
           ride={ride}
+          handleCancelRide={handleCancelRide}
         />
       </div>
     </div>

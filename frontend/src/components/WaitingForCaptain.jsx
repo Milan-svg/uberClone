@@ -3,23 +3,21 @@ import React from "react";
 const WaitingForCaptain = ({ setIsWaitingForCaptain, ride }) => {
   return (
     <div>
-      <h5
-        className="p-1 text-center w-[93%] absolute top-0"
+      <div
+        className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-3"
         onClick={() => {
           setIsWaitingForCaptain(false);
         }}
-      >
-        <i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
-      </h5>
+      ></div>
 
       <div className="flex items-center justify-between">
         <img
-          className="h-12"
+          className="h-16"
           src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
           alt=""
         />
-        <div className="text-right">
-          <h2 className="text-lg font-medium capitalize">
+        <div className="text-right space-y-2">
+          <h2 className="text-xl font-bold capitalize">
             {ride?.captain?.fullname.firstname +
               " " +
               ride?.captain?.fullname.lastname}
@@ -27,7 +25,7 @@ const WaitingForCaptain = ({ setIsWaitingForCaptain, ride }) => {
           <h4 className="text-xl font-semibold -mt-1 -mb-1">
             {ride?.captain?.vehicle.plate}
           </h4>
-          <p className="text-sm text-gray-600">Maruti Suzuki Alto</p>
+          <p className="text-md text-gray-600">Maruti Suzuki Alto</p>
           <h1 className="text-lg font-semibold">{ride?.otp}</h1>
         </div>
       </div>

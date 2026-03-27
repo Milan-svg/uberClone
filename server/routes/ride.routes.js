@@ -1,6 +1,7 @@
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { Router } from "express";
 import {
+  cancelRideCaptain,
   cleanupStaleRides,
   confirmRide,
   createRide,
@@ -29,7 +30,7 @@ rideRouter.route("/create-ride").post(
       .withMessage("Invalid vehicle type"),
   ],
 
-  createRide
+  createRide,
 );
 rideRouter
   .route("/get-fare")
@@ -38,14 +39,14 @@ rideRouter
       query("pickup").isString().isLength({ min: 3 }),
       query("destination").isString().isLength({ min: 3 }),
     ],
-    getFare
+    getFare,
   );
 
 rideRouter.route("/confirm").post(
   verifyJWT,
   [body("rideId").isMongoId().withMessage("Invalid ride id")],
 
-  confirmRide
+  confirmRide,
 );
 rideRouter
   .route("/start")
@@ -58,7 +59,7 @@ rideRouter
         .isLength({ min: 6, max: 6 })
         .withMessage("Invalid OTP"),
     ],
-    startRide
+    startRide,
   );
 
 rideRouter
@@ -66,7 +67,14 @@ rideRouter
   .post(
     verifyJWT,
     body("rideId").isMongoId().withMessage("Invalid ride id"),
-    endRide
+    endRide,
+  );
+rideRouter
+  .route("/cancel")
+  .post(
+    verifyJWT,
+    body("rideId").isMongoId().withMessage("Invalid ride id"),
+    cancelRideCaptain,
   );
 rideRouter.route("/current").get(verifyJWT, getCurrentRide);
 rideRouter.route("/cleanup").delete(verifyJWT, cleanupStaleRides);

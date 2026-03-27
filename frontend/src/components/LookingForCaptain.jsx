@@ -3,15 +3,15 @@ import React from "react";
 const LookingForCaptain = ({ setIsLookingForCaptain, ride }) => {
   return (
     <div>
-      <h5
-        className="p-1 text-center w-[93%] absolute top-0"
+      <div
+        className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-3"
         onClick={() => {
           setIsLookingForCaptain(false);
         }}
-      >
-        <i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
-      </h5>
-      <h3 className="text-2xl font-semibold mb-5">Searching for a Captain</h3>
+      ></div>
+      <h3 className="text-2xl font-semibold mb-5 mt-2">
+        Searching for a Captain
+      </h3>
       <img
         className="h-20 w-40 mx-auto mb-6"
         src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"

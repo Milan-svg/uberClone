@@ -36,7 +36,7 @@ const ActiveRide = () => {
   useEffect(() => {
     if (hasPickup && hasDestination) {
       getRoute(ride.pickupCoordinates, ride.destinationCoordinates).then(
-        (route) => setRoadRoute(route)
+        (route) => setRoadRoute(route),
       );
     }
   }, [ride]);
@@ -134,12 +134,7 @@ const ActiveRide = () => {
           <i className="text-lg font-medium ri-logout-box-r-line"></i>
         </Link>
       </div>
-      <Link
-        to="/home"
-        className="absolute z-[1000] right-2 top-2 h-10 w-10 bg-white flex items-center justify-center rounded-full"
-      >
-        <i className="text-lg font-medium ri-home-5-line"></i>
-      </Link>
+
       <div className="absolute inset-0 z-0">
         <MapContainer
           center={fallbackCenter}
@@ -209,10 +204,10 @@ const ActiveRide = () => {
           )}
         </MapContainer>
       </div>
-      <div className="absolute bottom-0 w-full bg-white h-[33%] z-10 p-4 my-4 shadow-2xl rounded-xl">
+      <div className="absolute bottom-0 w-full bg-white z-10 p-4 my-4 shadow-2xl rounded-xl">
         <div className="flex items-center justify-between">
           <img
-            className="h-24"
+            className="h-16"
             src="https://swyft.pl/wp-content/uploads/2023/05/how-many-people-can-a-uberx-take.jpg"
             alt=""
           />
@@ -243,10 +238,10 @@ const ActiveRide = () => {
               </div>
             </div>
           </div>
+          <button className="w-full mt-4 bg-green-600 hover:bg-green-700 active:scale-[0.97] transition-all text-white text-lg font-semibold py-2.5 rounded-lg">
+            Make Payment
+          </button>
         </div>
-        <button className="w-full mt-5 bg-green-700 text-white font-semibold p-2 rounded-lg">
-          Make Payment
-        </button>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ import {
 } from "react-leaflet";
 import L, { map } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import RideComplete from "../components/RideComplete";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -24,6 +24,7 @@ const CaptainActiveRide = () => {
   const { captain } = useCaptain();
   const { socket } = useSocket();
   const mapRef = useRef();
+  const navigate = useNavigate();
 
   const { currentRide: ride, syncRideState } = useRide();
   const hasPickup =
@@ -67,7 +68,7 @@ const CaptainActiveRide = () => {
     };
 
     updateLocation();
-    const IntervalId = setInterval(updateLocation, 20000);
+    const IntervalId = setInterval(updateLocation, 6000);
 
     return () => {
       clearInterval(IntervalId);
@@ -83,22 +84,12 @@ const CaptainActiveRide = () => {
       }
     };
     checkRide();
-    const socketRideEnd = async () => {
-      console.log("RIDE ENDED SOCKET RECIEVED");
-      await syncRideState();
-      navigate("/captain-home");
-    };
-    socket.on("ride-ended", socketRideEnd);
-
-    return () => {
-      socket.off("ride-ended", socketRideEnd);
-    };
-  }, [socket]);
+  }, []);
 
   useEffect(() => {
     if (hasPickup && hasDestination) {
       getRoute(ride.pickupCoordinates, ride.destinationCoordinates).then(
-        (route) => setRoadRoute(route)
+        (route) => setRoadRoute(route),
       );
     }
   }, [ride]);
@@ -110,7 +101,7 @@ const CaptainActiveRide = () => {
         duration: 0.5,
       });
     },
-    [completeRidePanel]
+    [completeRidePanel],
   );
 
   const getRoute = async (start, end) => {
@@ -217,29 +208,36 @@ const CaptainActiveRide = () => {
       </div>
 
       <div
-        className="absolute bottom-0 w-full bg-white h-[20%] z-10 p-4 shadow-2xl rounded-xl"
+        className="absolute bottom-0 w-full bg-white z-10 shadow-2xl rounded-xl p-4 "
         onClick={() => {
           setCompleteRidePanel(true);
         }}
       >
-        <h5
-          className="p-1 text-center w-full absolute top-0 "
-          onClick={() => {}}
-        >
-          <i className="text-3xl   text-gray-800 ri-arrow-up-wide-line"></i>
-        </h5>
-        <div className="flex flex-col items-center justify-between w-full h-full p-4 ">
-          <h4 className="text-2xl font-bold">Ride underway</h4>
+        <div className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-2"></div>
 
-          <button className="w-full bg-green-700 text-white text-2xl font-semibold p-3 px-10 rounded-lg ">
-            Complete Ride
-          </button>
+        <div className="flex items-center justify-between ">
+          <div className="flex flex-col leading-tight">
+            <span className="text-md text-gray-500">Ride status</span>
+            <span className="text-xl font-semibold text-gray-900">
+              Underway 🚗
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-sm bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+              Active
+            </span>
+
+            <button className="bg-green-600 hover:bg-green-700 active:scale-[0.97] transition-all text-white text-lg font-bold px-4 py-2 rounded-lg">
+              Complete
+            </button>
+          </div>
         </div>
       </div>
 
       <div
         ref={completeRidePanelRef}
-        className="absolute w-full z-10 bottom-0 translate-y-full bg-white px-3 py-10 pt-12"
+        className="absolute w-full z-10 bottom-0 translate-y-full bg-white px-3"
       >
         <RideComplete
           ride={ride}

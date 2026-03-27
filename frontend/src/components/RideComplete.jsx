@@ -10,71 +10,73 @@ const RideComplete = ({ setCompleteRidePanel, ride, syncRideState }) => {
         rideId: ride._id,
       });
       if (res.status === 200) {
-        syncRideState();
+        await syncRideState();
         navigate("/captain-home");
       }
     } catch (error) {
       console.error("ERROR AT handleFinishRide fnc: ", error);
     }
   };
+
   return (
-    <div>
-      <h5
-        className="p-1 text-center w-[93%] absolute top-0"
-        onClick={() => {
-          setCompleteRidePanel(false);
-        }}
-      >
-        <i className="text-3xl text-gray-200 ri-arrow-down-wide-line"></i>
-      </h5>
-      <h3 className="text-2xl font-semibold mb-5">Finish this Ride</h3>
-      <div className="flex items-center justify-between p-4 border-2  rounded-lg mt-4">
-        <div className="flex items-center gap-3 ">
+    <div className=" pb-3 pt-2">
+      <div
+        className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-3"
+        onClick={() => setCompleteRidePanel(false)}
+      ></div>
+
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xl font-bold text-gray-900">Finish Ride</h3>
+        <span className="text-md text-gray-500">Review</span>
+      </div>
+
+      <div className="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-xl mb-3">
+        <div className="flex items-center gap-2">
           <img
-            className="h-12 rounded-full object-cover w-12"
-            src="https://plus.unsplash.com/premium_photo-1661602011150-6c6f8b9ba788?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            className="h-10 w-10 rounded-full object-cover"
+            src="https://plus.unsplash.com/premium_photo-1661602011150-6c6f8b9ba788?q=80&w=1470&auto=format&fit=crop"
             alt=""
           />
-          <h2 className="text-lg font-medium">
+          <span className="text-md font-semibold text-gray-900">
             {ride?.user?.fullname.firstname +
               " " +
               ride?.user?.fullname.lastname}
-          </h2>
-        </div>
-        <h5 className="text-lg font-semibold">2.2 KM</h5>
-      </div>
-      <div className="flex gap-2 justify-between flex-col items-center">
-        <div className="w-full mt-5">
-          <div className="flex items-center gap-5 p-3 border-b-2">
-            <i className="ri-map-pin-user-fill"></i>
-            <div>
-              <h3 className="text-lg font-medium">{ride?.pickup}</h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-5 p-3 border-b-2">
-            <i className="text-lg ri-map-pin-2-fill"></i>
-            <div>
-              <h3 className="text-lg font-medium">{ride?.destination}</h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-5 p-3">
-            <i className="ri-currency-line"></i>
-            <div>
-              <h3 className="text-lg font-medium">₹{ride?.fare}</h3>
-              <p className="text-sm -mt-1 text-gray-600">Cash</p>
-            </div>
-          </div>
+          </span>
         </div>
 
-        <div className="mt-10 w-full">
-          <button
-            className="w-full mt-5 flex  text-lg justify-center bg-green-700 text-white font-semibold p-3 rounded-lg"
-            onClick={handleFinishRide}
-          >
-            Finish Ride
-          </button>
+        <span className="text-sm font-semibold text-gray-800">2.2 km</span>
+      </div>
+
+      <div className="divide-y rounded-xl border border-gray-100 bg-white">
+        <div className="flex items-start gap-3 px-3 py-2">
+          <i className="ri-map-pin-user-fill text-gray-600"></i>
+          <p className="text-md font-semibold capitalize">{ride?.pickup}</p>
+        </div>
+
+        <div className="flex items-start gap-3 px-3 py-2">
+          <i className="ri-map-pin-2-fill text-gray-600"></i>
+          <p className="text-md font-semibold capitalize">
+            {ride?.destination}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 px-3 py-2">
+          <i className="ri-currency-line text-gray-600"></i>
+          <div className="flex items-center justify-between w-full">
+            <span className="text-sm font-medium text-gray-900">
+              ₹{ride?.fare}
+            </span>
+            <span className="text-xs text-gray-500">Cash</span>
+          </div>
         </div>
       </div>
+
+      <button
+        className="w-full mt-4 bg-green-600 hover:bg-green-700 active:scale-[0.97] transition-all text-white text-lg font-semibold py-2.5 rounded-lg"
+        onClick={handleFinishRide}
+      >
+        Finish Ride
+      </button>
     </div>
   );
 };

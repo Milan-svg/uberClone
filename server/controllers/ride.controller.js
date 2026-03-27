@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
   calculateFare,
+  cancelRideCaptainService,
   confirmRideService,
   createRideService,
   endRideService,
@@ -22,7 +23,7 @@ const createRide = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
   // console.log("REQ:", req.body);
@@ -37,7 +38,7 @@ const createRide = asyncHandler(async (req, res) => {
     destination,
     vehicleType,
     pickupCoordinates,
-    destinationCoordinates
+    destinationCoordinates,
   );
   //console.log("RIDE: ", ride);
   // get coordinates from pickup
@@ -46,11 +47,11 @@ const createRide = asyncHandler(async (req, res) => {
   const captainsInRadius = await fetchCaptainsInRadius(
     pickupCoordinates.ltd,
     pickupCoordinates.lng,
-    2
+    2,
   );
   ride.otp = "";
   const rideObjWithUser = await Ride.findOne({ _id: ride._id }).populate(
-    "user"
+    "user",
   );
   captainsInRadius.map((captain) => {
     sendMessageToSocketId(captain.socketId, {
@@ -70,7 +71,7 @@ const getFare = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
   const { pickup, destination } = req.query;
@@ -86,7 +87,7 @@ const confirmRide = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
 
@@ -109,7 +110,7 @@ const startRide = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
 
@@ -135,7 +136,7 @@ const endRide = asyncHandler(async (req, res) => {
     return res
       .status(400)
       .json(
-        new ApiResponse(400, { errors: errors.array() }, "validation error")
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
       );
   }
 
@@ -154,9 +155,32 @@ const endRide = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, ride, "Ride Ended successfully"));
 });
 
+const cancelRideCaptain = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(400)
+      .json(
+        new ApiResponse(400, { errors: errors.array() }, "validation error"),
+      );
+  }
+  const { rideId } = req.body;
+  const captainId = req.user._id;
+
+  const ride = await cancelRideCaptainService(rideId, captainId);
+
+  sendMessageToSocketId(ride.user.socketId, {
+    event: "ride-cancelled",
+    data: ride,
+  });
+  return res
+    .status(200)
+    .json(new ApiResponse(200, ride, "Ride Cancelled successfully"));
+});
+
 const getCurrentRide = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const userType = req.userType;
+  const userType = req.role;
   //console.log({ USERID: userId, TYPE: userType });
   const ride = await fetchCurrentRide(userId, userType);
   if (!ride) {
@@ -182,7 +206,7 @@ const cleanupStaleRides = asyncHandler(async (req, res) => {
       status: "pending",
       createdAt: { $lt: cutoff },
     },
-    { status: "cancelled" }
+    { status: "cancelled" },
   );
 
   return res
@@ -191,8 +215,8 @@ const cleanupStaleRides = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { cancelled: result.modifiedCount },
-        "Stale rides cleared"
-      )
+        "Stale rides cleared",
+      ),
     );
 });
 
@@ -204,4 +228,5 @@ export {
   endRide,
   getCurrentRide,
   cleanupStaleRides,
+  cancelRideCaptain,
 };

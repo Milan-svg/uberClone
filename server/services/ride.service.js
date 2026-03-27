@@ -32,17 +32,17 @@ export async function calculateFare(pickup, destination) {
     auto: Math.round(
       baseFare.auto +
         (distanceTime.distance.value / 1000) * perKmRate.auto +
-        (distanceTime.duration.value / 60) * perMinuteRate.auto
+        (distanceTime.duration.value / 60) * perMinuteRate.auto,
     ),
     car: Math.round(
       baseFare.car +
         (distanceTime.distance.value / 1000) * perKmRate.car +
-        (distanceTime.duration.value / 60) * perMinuteRate.car
+        (distanceTime.duration.value / 60) * perMinuteRate.car,
     ),
     moto: Math.round(
       baseFare.moto +
         (distanceTime.distance.value / 1000) * perKmRate.moto +
-        (distanceTime.duration.value / 60) * perMinuteRate.moto
+        (distanceTime.duration.value / 60) * perMinuteRate.moto,
     ),
   };
 
@@ -62,7 +62,7 @@ export const createRideService = async (
   destination,
   vehicleType,
   pickupCoordinates,
-  destinationCoordinates
+  destinationCoordinates,
 ) => {
   if (!user || !pickup || !destination || !vehicleType) {
     throw new ApiError(400, "All fields are required");
@@ -91,7 +91,7 @@ export const confirmRideService = async (rideId, captainId) => {
     {
       captain: captainId,
       status: "accepted",
-    }
+    },
   );
   const ride = await Ride.findById(rideId)
     .populate("user")
@@ -131,7 +131,7 @@ export const startRideService = async (rideId, otp, captainId) => {
     },
     {
       status: "ongoing",
-    }
+    },
   )
     .populate("user")
     .populate("captain")
@@ -159,7 +159,28 @@ export const endRideService = async (rideId, captainId) => {
     },
     {
       status: "completed",
-    }
+    },
+  )
+    .populate("user")
+    .populate("captain");
+  return finalRide;
+};
+
+export const cancelRideCaptainService = async (rideId, captainId) => {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
+  }
+  if (!ride.captain || ride.captain._id.toString() !== captainId.toString()) {
+    throw new ApiError(403, "Captain is not assigned to this ride");
+  }
+  const finalRide = await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "cancelled",
+    },
   )
     .populate("user")
     .populate("captain");

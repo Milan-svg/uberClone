@@ -61,10 +61,12 @@ const Home = () => {
     //syncRideState
     socket.on("ride-confirmed", socketConfirmRide);
     socket.on("ride-started", socketStartRide);
+    socket.on("ride-cancelled", socketCancelRide);
 
     return () => {
       socket.off("ride-confirmed", socketConfirmRide);
       socket.off("ride-started", socketStartRide);
+      socket.off("ride-cancelled", socketCancelRide);
     };
   }, [user, socket]);
 
@@ -188,7 +190,7 @@ const Home = () => {
   useEffect(() => {
     const checkRide = async () => {
       const ride = await syncRideState();
-      if (!ride) {
+      if (!ride || ride.status === "cancelled") {
         setPanelOpen(false);
         setVehiclePanelOpen(false);
         setRideConfirmPanelOpen(false);
@@ -225,6 +227,13 @@ const Home = () => {
     await syncRideState();
     navigate("/riding");
   };
+
+  const socketCancelRide = async () => {
+    console.log("RIDE CANCELLED");
+    setIsWaitingForCaptain(false);
+    await syncRideState();
+  };
+
   //Animations
   useGSAP(
     function () {
@@ -307,7 +316,7 @@ const Home = () => {
           >
             <i className="ri-arrow-down-wide-line"></i>
           </h5>
-          <h4 className="text-2xl font-semibold">Find a trip</h4>
+          <h4 className="text-xl font-bold">Find a trip</h4>
           <form
             className="relative py-3"
             onSubmit={(e) => {
@@ -324,7 +333,7 @@ const Home = () => {
               value={pickup}
               ref={pickupInputRef}
               onChange={handlePickupChang}
-              className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full"
+              className="bg-[#eee] px-12 py-2 text-md rounded-lg w-full shadow-sm"
               type="text"
               placeholder="Enter pick-up location"
             />
@@ -337,13 +346,13 @@ const Home = () => {
               ref={destinationInputRef}
               value={destination}
               onChange={handleDestinationChange}
-              className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full  mt-3"
+              className="bg-[#eee] px-12 py-2 text-md rounded-lg w-full mt-3 shadow-sm"
               type="text"
               placeholder="Enter your destination"
             />
           </form>
           <button
-            className="bg-black text-white px-4 py-2 rounded-lg mt-3 w-full"
+            className="bg-gray-800 hover:bg-black active:scale-[0.97] transition-all text-white text-lg font-bold px-4 py-2 rounded-lg w-full"
             onClick={handleFindTrip}
           >
             Find Trip

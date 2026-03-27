@@ -23,7 +23,7 @@ function UserLogin() {
     //setUserData();
     try {
       const res = await api.post(`/users/login`, user);
-      console.log("user login res (userlogin.jsx):", res);
+      //console.log("user login res (userlogin.jsx):", res);
       if (res.status === 200) {
         const data = res.data.data;
         //console.log(data);
