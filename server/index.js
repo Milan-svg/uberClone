@@ -1,18 +1,20 @@
+import dotenv from "dotenv";
+dotenv.config({ path: "./.env" });
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cookieParser from "cookie-parser";
 import { initializeSocket } from "./utils/socket.js";
 import { createServer } from "http";
+
 const app = express();
 
 //middlewares
 
 app.use(
   cors({
-    origin: "https://rv3wqvn5-8000.inc1.devtunnels.ms",
+    origin: process.env.FRONTEND_URL || "*",
 
     credentials: true,
   }),
@@ -21,7 +23,6 @@ app.use(
 app.use(express.json({ limit: "12kb" }));
 app.use(cookieParser());
 //connect to mongodb
-dotenv.config({ path: "./.env" });
 
 //console.log(process.env.MONGODB_URL);
 mongoose
@@ -32,7 +33,7 @@ mongoose
     ),
   )
   .catch((err) => {
-    console.log("MONGODB CONNECTION ERROR:", err);
+    console.error("MONGODB CONNECTION ERROR:", err);
     process.exit(1);
   });
 
@@ -41,6 +42,9 @@ app.get("/health", (req, res) => {
     status: "ok",
     uptime: process.uptime(),
   });
+});
+app.get("/", (req, res) => {
+  res.send("API is running");
 });
 //Routes
 import userRouter from "./routes/user.routes.js";
