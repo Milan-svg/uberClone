@@ -107,9 +107,9 @@ const Home = () => {
           params: { input: e.target.value },
         });
         setPickupSuggestions(res.data.data);
-        console.log(res);
+        //console.log(res);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }, 500);
   };
@@ -132,7 +132,7 @@ const Home = () => {
         setDestinationSuggestions(res.data.data);
         //console.log(res);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }, 500);
   };
@@ -163,7 +163,7 @@ const Home = () => {
         setVehiclePanelOpen(true);
       }
     } catch (error) {
-      console.log("FIND TRIP ERROR: ", error);
+      console.error("FIND TRIP ERROR: ", error);
     }
   };
 

@@ -51,7 +51,7 @@ const CaptainHome = () => {
             userId: captain._id,
             location: locationData,
           });
-          console.log("LOCATION DATA SENT");
+          //console.log("LOCATION DATA SENT");
           setCaptainLocation(locationData);
           const map = mapRef.current;
           if (map) {

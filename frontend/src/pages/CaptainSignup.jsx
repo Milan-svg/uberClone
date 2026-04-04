@@ -40,7 +40,7 @@ function CaptainSignup() {
         vehicleType: formData.vehicleType,
       },
     };
-    console.log("FORMDATA:-", captain);
+    //console.log("FORMDATA:-", captain);
     try {
       const res = await api.post(`/captains/register`, captain);
       //console.log("RES:", res);

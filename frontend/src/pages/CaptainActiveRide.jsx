@@ -55,7 +55,7 @@ const CaptainActiveRide = () => {
             userId: captain._id,
             location: locationData,
           });
-          console.log("LOCATION DATA SENT");
+          //console.log("LOCATION DATA SENT");
           setCaptainLocation(locationData);
           const map = mapRef.current;
           if (map) {
@@ -78,7 +78,7 @@ const CaptainActiveRide = () => {
   useEffect(() => {
     const checkRide = async () => {
       const ride = await syncRideState();
-      console.log("CHECKED RIDE: ", ride);
+      //console.log("CHECKED RIDE: ", ride);
       if (!ride) {
         navigate("/captain-home");
       }

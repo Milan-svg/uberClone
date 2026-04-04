@@ -32,7 +32,7 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (!socket) return;
     const handleConnect = () => {
-      console.log("SOCKET CONNECTED, REJOINING ROOM");
+      //console.log("SOCKET CONNECTED, REJOINING ROOM");
       if (user?._id) {
         socket.emit("join", { userId: user._id, userType: "user" });
       }

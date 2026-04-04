@@ -37,12 +37,12 @@ function UserSignup() {
     //   `${import.meta.env.VITE_BASE_URL}/users/register`,
     //   user
     // );
-    console.log("USER SIGNUP RES: ", res);
+    //console.log("USER SIGNUP RES: ", res);
     if (res.status === 201) {
       const data = res.data;
       setUserData(data.user);
       setUser(data.user);
-      console.log(data.user);
+      //console.log(data.user);
       navigate("/home");
     }
   };

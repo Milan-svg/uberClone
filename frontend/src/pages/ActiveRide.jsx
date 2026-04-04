@@ -44,14 +44,14 @@ const ActiveRide = () => {
   useEffect(() => {
     const checkRide = async () => {
       const ride = await syncRideState();
-      console.log("CHECKED RIDE: ", ride);
+      //console.log("CHECKED RIDE: ", ride);
       if (!ride) {
         navigate("/home");
       }
     };
     checkRide();
     const socketRideEnd = async () => {
-      console.log("RIDE ENDED SOCKET RECIEVED");
+      //console.log("RIDE ENDED SOCKET RECIEVED");
       await syncRideState();
       navigate("/home");
     };
@@ -66,7 +66,7 @@ const ActiveRide = () => {
     if (!socket || !ride?.captain?._id) return;
 
     const handleLocationUpdate = async (location) => {
-      console.log("CAPTIAN LOCATION UPDATE: ", location);
+      //console.log("CAPTIAN LOCATION UPDATE: ", location);
 
       const newLoc = { ltd: Number(location.ltd), lng: Number(location.lng) };
       setCaptainLocation(newLoc);

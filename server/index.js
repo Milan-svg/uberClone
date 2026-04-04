@@ -9,15 +9,10 @@ import { createServer } from "http";
 const app = express();
 
 //middlewares
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   })
-// );
+
 app.use(
   cors({
-    origin: "https://rv3wqvn5-5173.inc1.devtunnels.ms",
+    origin: "https://rv3wqvn5-8000.inc1.devtunnels.ms",
 
     credentials: true,
   }),
@@ -28,7 +23,7 @@ app.use(cookieParser());
 //connect to mongodb
 dotenv.config({ path: "./.env" });
 
-console.log(process.env.MONGODB_URL);
+//console.log(process.env.MONGODB_URL);
 mongoose
   .connect(`${process.env.MONGODB_URL}/milan1`)
   .then((connectionInstance) =>
@@ -41,6 +36,12 @@ mongoose
     process.exit(1);
   });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+  });
+});
 //Routes
 import userRouter from "./routes/user.routes.js";
 import captainRouter from "./routes/captain.routes.js";
