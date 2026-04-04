@@ -25,7 +25,7 @@ app.use(cookieParser());
 
 //console.log(process.env.MONGODB_URL);
 mongoose
-  .connect(process.env.MONGODB_URL)
+  .connect(`${process.env.MONGODB_URL}`)
   .then((connectionInstance) =>
     console.log(
       `MONGODB connected, DB HOST: ${connectionInstance.connection.host}`,
