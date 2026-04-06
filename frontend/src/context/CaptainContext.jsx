@@ -14,7 +14,6 @@ export const CaptainProvider = ({ children }) => {
   const [captain, setCaptain] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const checkAuth = async () => {
       try {

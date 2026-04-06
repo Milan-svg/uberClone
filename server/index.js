@@ -11,7 +11,6 @@ import { createServer } from "http";
 const app = express();
 
 //middlewares
-
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "*",

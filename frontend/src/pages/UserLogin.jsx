@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useUser } from "../context/UserContext";
 import api from "../utils/axiosInstance.js";
+import { Eye, EyeOff } from "lucide-react";
+
 function UserLogin() {
   const [email, setEmail] = useState("");
 
