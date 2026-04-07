@@ -11,7 +11,6 @@ import MobileLayout from "./components/MobileLayout";
 import CaptainHome from "./pages/CaptainHome";
 import ActiveRide from "./pages/ActiveRide";
 import CaptainActiveRide from "./pages/CaptainActiveRide";
-import TestSocket from "./pages/SocketTest";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
     <>
       <Routes>
         <Route element={<MobileLayout />}>
-          <Route path="/socket" element={<TestSocket />} />
           <Route path="/" element={<Start />} />
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<UserSignup />} />
