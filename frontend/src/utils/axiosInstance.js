@@ -5,7 +5,7 @@ import axios from "axios";
 //   withCredentials: true,
 // });
 const api = axios.create({
-  baseURL: "https://rv3wqvn5-8000.inc1.devtunnels.ms/api/v1",
+  baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
 });
 
