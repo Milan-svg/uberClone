@@ -25,7 +25,7 @@ const RidePopup = ({
             alt=""
           />
           <h2 className="text-lg font-medium capitalize">
-            {ride?.user.fullname.firstname + " " + ride?.user.fullname.lastname}
+            {ride?.user?.fullname?.firstname + " " + ride?.user?.fullname?.lastname}
           </h2>
         </div>
         <h5 className="text-lg font-semibold">1.7 KM</h5>
