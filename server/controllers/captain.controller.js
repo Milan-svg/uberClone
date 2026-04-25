@@ -31,6 +31,7 @@ const registerCaptain = asyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
     })
     .json(
       new ApiResponse(
@@ -65,6 +66,7 @@ const loginCaptain = asyncHandler(async (req, res) => {
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
       maxAge: 6 * 60 * 60 * 1000,
     })
     .json(
@@ -82,6 +84,7 @@ const logoutCaptain = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
+      sameSite: "none",
     })
     .json(new ApiResponse(200, {}, "logout successfull"));
 });

@@ -208,7 +208,7 @@ const CaptainActiveRide = () => {
       </div>
 
       <div
-        className="absolute bottom-0 w-full bg-white z-10 shadow-2xl rounded-xl p-4 "
+        className="absolute bottom-0 w-full bg-white z-10 shadow-2xl rounded-xl p-4"
         onClick={() => {
           setCompleteRidePanel(true);
         }}

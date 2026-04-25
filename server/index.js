@@ -9,6 +9,7 @@ import { initializeSocket } from "./utils/socket.js";
 import { createServer } from "http";
 
 const app = express();
+app.set("trust proxy", 1);
 
 //middlewares
 app.use(
